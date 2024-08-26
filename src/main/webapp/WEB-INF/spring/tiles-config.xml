@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC 
+"-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" 
+"http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<!-- tiles 설정 -->
+<tiles-definitions>
+
+	<!-- common_user main layout -->
+	<definition name="mainTemplate" template="/WEB-INF/views/mainTemplate.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/tiles/header.jsp" />
+		<put-attribute name="body" />
+		<put-attribute name="footer" value="/WEB-INF/views/tiles/footer.jsp" />
+	</definition>
+	
+	<definition name="commons/*" extends="mainTemplate">
+		<put-attribute name="body" value="/WEB-INF/views/commons/{1}.jsp" />
+	</definition>
+	
+	<!-- common_user Resume layout -->
+	<definition name="mainTemplateResume" template="/WEB-INF/views/mainTemplate.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/tiles/header.jsp" />
+		<put-attribute name="body" />
+		<put-attribute name="footer" value="/WEB-INF/views/tiles/footer.jsp" />
+	</definition>
+	<definition name="commons/resume/*" extends="mainTemplateResume">
+		<put-attribute name="body" value="/WEB-INF/views/commons/resume/{1}.jsp" />
+	</definition>
+	
+	<!-- common_user Recruit layout -->
+	<definition name="mainTemplateRecruit" template="/WEB-INF/views/mainTemplate.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/tiles/header.jsp" />
+		<put-attribute name="body" />
+		<put-attribute name="footer" value="/WEB-INF/views/tiles/footer.jsp" />
+	</definition>
+	<definition name="commons/recruit/*" extends="mainTemplateRecruit">
+		<put-attribute name="body" value="/WEB-INF/views/commons/recruit/{1}.jsp" />
+	</definition>
+	
+	<!-- common_user Company Review layout -->
+	<definition name="mainTemplateReview" template="/WEB-INF/views/mainTemplate.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/tiles/header.jsp" />
+		<put-attribute name="body" />
+		<put-attribute name="footer" value="/WEB-INF/views/tiles/footer.jsp" />
+	</definition>
+	<definition name="commons/companyReview/*" extends="mainTemplateReview">
+		<put-attribute name="body" value="/WEB-INF/views/commons/companyReview/{1}.jsp" />
+	</definition>
+	
+	<!-- common_user main layout -->
+	<definition name="mainTemplateUserService" template="/WEB-INF/views/mainTemplate.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/tiles/header.jsp" />
+		<put-attribute name="body" />
+		<put-attribute name="footer" value="/WEB-INF/views/tiles/footer.jsp" />
+	</definition>
+	<definition name="commons/userService/*" extends="mainTemplateUserService">
+		<put-attribute name="body" value="/WEB-INF/views/commons/userService/{1}.jsp" />
+	</definition>
+	
+	<!-- common_user main layout (/jobel/myPage) -->
+	<definition name="myPageTemplate" template="/WEB-INF/views/mainMyPageTemplate.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/tiles/myPage_header.jsp" />
+		<put-attribute name="body" />
+	</definition>
+	
+	<definition name="commons/myPage/*" extends="myPageTemplate">
+		<put-attribute name="body" value="/WEB-INF/views/commons/myPage/{1}.jsp" />
+	</definition>
+	
+	<!-- company_user main layout (/jobel/co_home) -->
+	<definition name="companyTemplate" template="/WEB-INF/views/companyTemplate.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/tiles/co_header.jsp" />
+		<put-attribute name="aside" value="/WEB-INF/views/tiles/co_aside.jsp" />
+		<put-attribute name="body" />
+		<put-attribute name="footer" value="/WEB-INF/views/tiles/co_footer.jsp" />
+	</definition>
+	
+	<definition name="company/*" extends="companyTemplate">
+		<put-attribute name="body" value="/WEB-INF/views/company/{1}.jsp" />
+	</definition>
+	
+	<!-- login layout (/jobel/register) -->
+	<definition name="loginTemplate" template="/WEB-INF/views/loginTemplate.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/tiles/header.jsp" />
+		<put-attribute name="body" />
+		<put-attribute name="footer" value="/WEB-INF/views/tiles/footer.jsp" />
+	</definition>
+	
+	<definition name="login/*" extends="loginTemplate">
+		<put-attribute name="body" value="/WEB-INF/views/login/{1}.jsp" />
+	</definition>
+	
+	<!-- company-login layout (/jobel/co_menu) -->
+	<definition name="co-loginTemplate" template="/WEB-INF/views/companyLoginTemplate.jsp">
+		<put-attribute name="header" value="/WEB-INF/views/tiles/co_menu_header.jsp" />
+		<put-attribute name="body" />
+		<put-attribute name="footer" value="/WEB-INF/views/tiles/footer.jsp" />
+	</definition>
+	
+	<definition name="login/company/*" extends="co-loginTemplate">
+		<put-attribute name="body" value="/WEB-INF/views/login/company/{1}.jsp" />
+	</definition>
+	
+	<!-- admin layout(/jobel/admin) -->
+	<definition name="adminTemplate" template="/WEB-INF/views/adminTemplate.jsp">
+		<put-attribute name="aside" value="/WEB-INF/views/tiles/admin_aside.jsp"/>
+		<put-attribute name="body" />
+	</definition>
+	
+	<definition name="admin/*" extends="adminTemplate">
+		<put-attribute name="body" value="/WEB-INF/views/admin/{1}.jsp" />
+	</definition>
+	
+</tiles-definitions>
+

@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IResumeMapper">
+
+	<resultMap type="resumeVO" id="resumeMap">
+		<id property="rsmNo" column="rsm_no"/>
+		<result property="memId" column="mem_id"/>
+		<result property="rsmNo" column="rsm_no"/>
+		<result property="rsmTitle" column="rsm_title"/>
+		<result property="rsmPhotoPath" column="rsm_photo_path"/>
+		<result property="pronunciationYn" column="pronunciation_yn"/>
+		<result property="selfIntroduction" column="self_introduction"/>
+		<result property="rsmRegYmd" column="rsm_reg_ymd"/>
+		<result property="rsmStatCode" column="rsm_stat_code"/>
+		<result property="rsmRlsYn" column="rsm_rls_yn"/>
+		<collection property="educationList" resultMap="rsmEducationMap"/>
+		<collection property="careerList" resultMap="rsmCareerMap"/>
+		<collection property="certList" resultMap="rsmCertMap"/>
+		<collection property="militaryService" resultMap="rsmMilitaryService"/>
+		<collection property="resumeDocument" resultMap="rsmDocument"/>
+	</resultMap>
+	
+	<resultMap type="rsmCareerVO" id="rsmCareerMap">
+		<id property="rsmNo" column="rsm_no"/>
+		<id property="careerNo" column="career_no"/>
+		<result property="rsmNo" column="rsm_no"/>
+		<result property="careerNo" column="career_no"/>
+		<result property="workType" column="work_type"/>
+		<result property="companyName" column="company_name"/>
+		<result property="jobName" column="job_name"/>
+		<result property="jncmpYmd" column="jncmp_ymd"/>
+		<result property="rtrmYmd" column="rtrm_ymd"/>
+	</resultMap>
+	
+	<resultMap type="rsmCertVO" id="rsmCertMap">
+		<id property="rsmNo" column="rsm_no"/>
+		<id property="certNo" column="cert_no"/>
+		<result property="rsmNo" column="rsm_no"/>
+		<result property="certNo" column="cert_no"/>
+		<result property="certType" column="cert_type"/>
+		<result property="certAcqulreYmd" column="cert_acqulre_ymd"/>
+		<result property="certExpiryYmd" column="cert_expiry_ymd"/>
+		<result property="certAgency" column="cert_agency"/>
+	</resultMap>
+	
+	<resultMap type="rsmDocumentVO" id="rsmDocument">
+		<id property="rsmNo" column="rsm_no"/>
+		<id property="documentNo" column="document_no"/>
+		<result property="rsmNo" column="rsm_no"/>
+		<result property="documentNo" column="document_no"/>
+		<result property="documentName" column="document_name"/>
+		<result property="documentStatCode" column="document_stat_code"/>
+	</resultMap>
+	
+	<resultMap type="rsmEducationVO" id="rsmEducationMap">
+		<id property="rsmNo" column="rsm_no"/>
+		<id property="eduNo" column="edu_no"/>
+		<result property="rsmNo" column="rsm_no"/>
+		<result property="eduNo" column="edu_no"/>
+		<result property="eduDivision" column="edu_division"/>
+		<result property="eduLocation" column="edu_location"/>
+		<result property="schoolName" column="school_name"/>
+		<result property="enterYmd" column="enter_ymd"/>
+		<result property="graduateYmd" column="graduate_ymd"/>
+		<result property="major" column="major"/>
+		<result property="subMajor" column="sub_major"/>
+		<result property="gradeBasis" column="grade_basis"/>
+		<result property="gradeAvg" column="grade_avg"/>
+		<result property="gradeType" column="grade_type"/>
+	</resultMap>
+	
+	<resultMap type="rsmMilServiceVO" id="rsmMilitaryService">
+		<id property="rsmNo" column="rsm_no"/>
+		<id property="milServiceNo" column="mil_service_no"/>
+		<result property="rsmNo" column="rsm_no"/>
+		<result property="milServiceNo" column="mil_service_no"/>
+		<result property="militaryService" column="military_service"/>
+		<result property="milBgngYmd" column="mil_bgng_ymd"/>
+		<result property="milEndYmd" column="mil_end_ymd"/>
+	</resultMap>
+
+	<insert id="createResume" parameterType="resumeVO">
+		<selectKey keyProperty="rsmNo" resultType="int" order="BEFORE">
+			select seq_rsm.nextval from dual
+        </selectKey>
+		INSERT INTO RESUME(
+			MEM_ID, RSM_NO, RSM_TITLE, RSM_STAT_CODE
+		)
+		VALUES(
+			#{memId}, #{rsmNo}, #{rsmTitle}, #{rsmStatCode}
+		)
+	</insert>
+	
+	<update id="createResumeTemp" parameterType="resumeVO">
+		UPDATE RESUME
+		SET
+			PRONUNCIATION_YN = #{pronunciationYn},
+			RSM_REG_YMD = TO_CHAR(SYSDATE, 'yyyyMMdd'),
+			RSM_RLS_YN = #{rsmRlsYn}
+			<if test='rsmTitle != null and rsmTitle != ""'>
+				, RSM_TITLE = #{rsmTitle}
+			</if>
+			<if test='rsmPhotoPath != null and rsmPhotoPath != ""'>
+				, RSM_PHOTO_PATH = #{rsmPhotoPath}
+			</if>
+			<if test="selfIntroduction != null and selfIntroduction != ''">
+				, SELF_INTRODUCTION = #{selfIntroduction}
+			</if>
+			<if test="rsmStatCode != null and rsmStatCode != ''">
+				, RSM_STAT_CODE = #{rsmStatCode}
+			</if>
+		WHERE 1 = 1
+		  AND RSM_NO = #{rsmNo}
+	</update>
+	
+	<select id="getResume" parameterType="String" resultType="resumeVO">
+		SELECT MEM_ID, RSM_NO, RSM_TITLE, RSM_PHOTO_PATH, RSM_REG_YMD, RSM_STAT_CODE, RSM_RLS_YN
+		  FROM RESUME
+		 WHERE MEM_ID = #{memId}
+		   AND RSM_STAT_CODE != 'RSMTYPE003'
+		 ORDER BY RSM_NO
+	</select>
+	
+	<select id="getResumeDetail" parameterType="resumeVO" resultMap="resumeMap">
+		SELECT MEM_ID, RSM.RSM_NO, RSM_TITLE, RSM_PHOTO_PATH, PRONUNCIATION_YN, SELF_INTRODUCTION, RSM_REG_YMD, RSM_STAT_CODE, RSM_RLS_YN
+			 , CAREER_NO, WORK_TYPE, COMPANY_NAME, JOB_NAME, JNCMP_YMD, RTRM_YMD
+			 , CERT_NO, CERT_TYPE, CERT_ACQULRE_YMD, CERT_EXPIRY_YMD, CERT_AGENCY
+			 , DOCUMENT_NAME, DOCUMENT_STAT_CODE
+			 , EDU_NO, EDU_DIVISION, EDU_LOCATION, SCHOOL_NAME, ENTER_YMD, GRADUATE_YMD
+			 , MAJOR, SUB_MAJOR, GRADE_BASIS, GRADE_AVG, GRADE_TYPE
+			 , MILITARY_SERVICE, MIL_BGNG_YMD, MIL_END_YMD
+		  FROM RESUME RSM
+		  LEFT OUTER JOIN RESUME_CAREER RSMCA ON (RSM.RSM_NO = RSMCA.RSM_NO)
+		  LEFT OUTER JOIN RESUME_CERTIFICATE RSMCE ON (RSM.RSM_NO = RSMCE.RSM_NO)
+		  LEFT OUTER JOIN RESUME_DOCUMENT RSMDO ON (RSM.RSM_NO = RSMDO.RSM_NO)
+		  LEFT OUTER JOIN RESUME_EDUCATION RSMED ON (RSM.RSM_NO = RSMED.RSM_NO)
+		  LEFT OUTER JOIN RESUME_MIL_SERVICE RSMMI ON (RSM.RSM_NO = RSMMI.RSM_NO)
+		 WHERE 1 = 1
+		   <if test="memId != null and memId != ''">
+		   AND MEM_ID = #{memId}
+		   </if>
+		   <if test="rsmStatCode != null and rsmStatCode != ''">
+		   AND RSM.RSM_STAT_CODE = #{rsmStatCode}
+		   </if>
+		   <if test="rsmNo != null and rsmNo != ''">
+		   AND RSM.RSM_NO = #{rsmNo}
+		   </if>
+		   AND RSM.RSM_STAT_CODE != 'RSMTYPE003'
+		 ORDER BY CAREER_NO, CERT_NO, EDU_NO
+	</select>
+	
+	<insert id="createRsmCareer" parameterType="rsmCareerVO">
+		<selectKey keyProperty="careerNo" resultType="int" order="BEFORE">
+			select count(*) + 1 from resume_career where rsm_no = #{rsmNo}
+        </selectKey>
+		INSERT INTO RESUME_CAREER(
+			RSM_NO, CAREER_NO
+			<if test="workType != null and workType != ''">, WORK_TYPE</if>
+			<if test="companyName != null and companyName != ''">, COMPANY_NAME</if>
+			<if test="jobName != null and jobName != ''">, JOB_NAME</if>
+			<if test="jncmpYmd != null and jncmpYmd != ''">, JNCMP_YMD</if>
+			<if test="rtrmYmd != null and rtrmYmd != ''">, RTRM_YMD</if>
+		)
+		VALUES(
+			#{rsmNo}, #{careerNo}
+			<if test="workType != null and workType != ''">, #{workType}</if>
+			<if test="companyName != null and companyName != ''">, #{companyName}</if>
+			<if test="jobName != null and jobName != ''">, #{jobName}</if>
+			<if test="jncmpYmd != null and jncmpYmd != ''">, #{jncmpYmd}</if>
+			<if test="rtrmYmd != null and rtrmYmd != ''">, #{rtrmYmd}</if>
+		)
+	</insert>
+	
+	<insert id="createRsmCert" parameterType="rsmCertVO">
+		<selectKey keyProperty="certNo" resultType="int" order="BEFORE">
+			select count(*) + 1 from resume_certificate where rsm_no = #{rsmNo}
+        </selectKey>
+		INSERT INTO RESUME_CERTIFICATE(
+			RSM_NO, CERT_NO
+			<if test="certType != null and certType != ''">, CERT_TYPE</if>
+			<if test="certAcqulreYmd != null and certAcqulreYmd != ''">, CERT_ACQULRE_YMD</if>
+			<if test="certExpiryYmd != null and certExpiryYmd != ''">, CERT_EXPIRY_YMD</if>
+			<if test="certAgency != null and certAgency != ''">, CERT_AGENCY</if>
+		)
+		VALUES(
+			#{rsmNo}, #{certNo}
+			<if test="certType != null and certType != ''">, #{certType}</if>
+			<if test="certAcqulreYmd != null and certAcqulreYmd != ''">, #{certAcqulreYmd}</if>
+			<if test="certExpiryYmd != null and certExpiryYmd != ''">, #{certExpiryYmd}</if>
+			<if test="certAgency != null and certAgency != ''">, #{certAgency}</if>
+		)
+	</insert>
+	
+	<insert id="createRsmEducation" parameterType="rsmEducationVO">
+		<selectKey keyProperty="eduNo" resultType="int" order="BEFORE">
+			select count(*) + 1 from resume_education where rsm_no = #{rsmNo}
+        </selectKey>
+		INSERT INTO RESUME_EDUCATION(
+			RSM_NO, EDU_NO
+			<if test="eduDivision != null and eduDivision != ''">, EDU_DIVISION</if>
+			<if test="eduLocation != null and eduLocation != ''">, EDU_LOCATION</if>
+			<if test="schoolName != null and schoolName != ''">, SCHOOL_NAME</if>
+			<if test="enterYmd != null and enterYmd != ''">, ENTER_YMD</if>
+			<if test="graduateYmd != null and graduateYmd != ''">, GRADUATE_YMD</if>
+			<if test="major != null and major != ''">, MAJOR</if>
+			<if test="subMajor != null and subMajor != ''">, SUB_MAJOR</if>
+			<if test="gradeBasis != null and gradeBasis != ''">, GRADE_BASIS</if>
+			<if test="gradeAvg != null and gradeAvg != ''">, GRADE_AVG</if>
+			<if test="gradeType != null and gradeType != ''">, GRADE_TYPE</if>
+		)
+		VALUES (
+			#{rsmNo}, #{eduNo}
+			<if test="eduDivision != null and eduDivision != ''">, #{eduDivision}</if>
+			<if test="eduLocation != null and eduLocation != ''">, #{eduLocation}</if>
+			<if test="schoolName != null and schoolName != ''">, #{schoolName}</if>
+			<if test="enterYmd != null and enterYmd != ''">, #{enterYmd}</if>
+			<if test="graduateYmd != null and graduateYmd != ''">, #{graduateYmd}</if>
+			<if test="major != null and major != ''">, #{major}</if>
+			<if test="subMajor != null and subMajor != ''">, #{subMajor}</if>
+			<if test="gradeBasis != null and gradeBasis != ''">, #{gradeBasis}</if>
+			<if test="gradeAvg != null and gradeAvg != ''">, #{gradeAvg}</if>
+			<if test="gradeType != null and gradeType != ''">, #{gradeType}</if>
+		)
+	</insert>
+	
+	<insert id="createMilitaryService" parameterType="rsmMilServiceVO">
+		INSERT INTO RESUME_MIL_SERVICE(
+			RSM_NO
+			<if test="militaryService != null and militaryService != ''">, MILITARY_SERVICE</if>
+			<if test="milBgngYmd != null and milBgngYmd != ''">, MIL_BGNG_YMD</if>
+			<if test="milEndYmd != null and milEndYmd != ''">, MIL_END_YMD</if>
+		)
+		VALUES(
+			#{rsmNo}
+			<if test="militaryService != null and militaryService != ''">, #{militaryService}</if>
+			<if test="milBgngYmd != null and milBgngYmd != ''">, #{milBgngYmd}</if>
+			<if test="milEndYmd != null and milEndYmd != ''">, #{milEndYmd}</if>
+		)
+	</insert>
+	
+	<insert id="createDocument" parameterType="rsmDocumentVO">
+		INSERT INTO RESUME_DOCUMENT(
+			RSM_NO, DOCUMENT_NAME, DOCUMENT_STAT_CODE
+		)
+		VALUES(
+			#{rsmNo}, #{documentName}, #{documentStatCode}
+		)
+	</insert>
+	
+	<delete id="deleteRsmEducation" parameterType="int">
+		DELETE FROM RESUME_EDUCATION
+		WHERE RSM_NO = #{rsmNo}
+	</delete>
+	
+	<delete id="deleteRsmCareer" parameterType="int">
+		DELETE FROM RESUME_CAREER
+		WHERE RSM_NO = #{rsmNo}
+	</delete>
+	
+	<delete id="deleteRsmCert" parameterType="int">
+		DELETE FROM RESUME_CERTIFICATE
+		WHERE RSM_NO = #{rsmNo}
+	</delete>
+	
+	<delete id="deleteMilitaryService" parameterType="int">
+		DELETE FROM RESUME_MIL_SERVICE
+		WHERE RSM_NO = #{rsmNo}
+	</delete>
+	
+	<update id="resumeDelete" parameterType="int">
+		UPDATE RESUME
+		   SET RSM_STAT_CODE = 'RSMTYPE003'
+		 WHERE RSM_NO = #{rsmNo}
+	</update>
+</mapper>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IReplyMapper">
+	<!-- 
+	취업상담게시판 댓글
+	INSERT INTO BOARD_REPLY(REPLY_NO, PARENT_REPLY_NO, MEM_ID, BOARD_ID, REPLY_CONTENT, REPLY_WRT_DT, DEL_YN)
+	VALUES('BOARD00028001',NULL,'aa1234','BOARD00028','내용',SYSDATE,'N')
+	 -->
+	<insert id="CommentRegist" parameterType="replyVO">
+		<selectKey resultType="String" order="BEFORE" keyProperty="replyNo">
+			SELECT NVL(SUBSTR(MAX(REPLY_NO),1,10) || TRIM(TO_CHAR(SUBSTR(MAX(REPLY_NO),11,3) + 1,'000')),#{boardId}||'001')
+			FROM   BOARD_REPLY
+			WHERE  REPLY_NO LIKE #{boardId}||'%'
+		</selectKey>
+		INSERT INTO BOARD_REPLY(REPLY_NO, PARENT_REPLY_NO, MEM_ID, BOARD_ID, REPLY_CONTENT, REPLY_WRT_DT, DEL_YN)
+		VALUES(#{replyNo}, null, #{memId}, #{boardId}, #{replyContent}
+			, SYSDATE, 'N')
+	</insert>
+
+
+	<update id="updateComment" parameterType="replyVO">
+		update board_reply
+		set
+		reply_content = #{replyContent}
+		where reply_no = #{replyNo}
+		
+	</update>
+	
+	<!-- 댓글 수정 -->
+	<update id="updateCommentAjax" parameterType="replyVO">
+		update board_reply
+		set    reply_content = #{replyContent}
+		where  reply_no = #{replyNo}
+		
+	</update>
+	
+	
+	<!-- 댓글 삭제 처리  -->
+	<update id="deleteCommentAjax" parameterType="replyVO">
+		update board_reply 
+		set  DEL_YN= 'Y' 
+		where REPLY_NO = #{replyNo}
+		
+	</update>
+	<!-- 댓글 삭제 처리  -->
+	<update id="deleteComment" parameterType="replyVO">
+		update board_reply 
+		set  DEL_YN= 'Y' 
+		where REPLY_NO = #{replyNo}
+		
+	</update>
+
+
+</mapper>

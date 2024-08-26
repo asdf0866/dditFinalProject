@@ -1,0 +1,596 @@
+ul {
+	list-style: none;
+}
+
+p {
+	margin : 0;
+}
+
+.recSection {
+	display: table;
+	overflow: hidden;
+	position: relative;
+	z-index: 1;
+	width : 100%;
+	height : 100%;
+	box-sizing: border-box;
+}
+
+.recSection * {
+	font-family: "Noto Sans KR", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 250;
+	font-style: normal;
+}
+	
+.recWrap {
+	display : table-row;
+	width : 100%;
+	height : 100%;
+	background-color : #eeeeee;
+}
+
+.recContent {
+	min-height : 960px;
+	width : 90%;
+	background-color: #ffffff;
+	border-radius: 10px;
+	margin : 50px auto;
+	padding : 0 15px;
+}
+	
+.mainOptionBar {
+	position: relative;
+	z-index : 5;
+}
+
+.recTitle {
+	position : relative;
+}
+.recTitleText {
+	margin : 15px 15px 15px 45px;
+	display : inline-block;
+	font-size : 1.5rem;
+	font-weight: 800;
+}
+
+.recSearchBar {
+	width: 100%;
+}
+	
+.tabSection {
+	width: 100%;
+}
+	
+.tabSection > div {
+	float : left;
+	position : relative;
+	border : 1px solid #dddddd;
+	width : 100%;
+}
+
+.sectionGroup {
+	display : flex;
+}
+
+.sectionGroup > div {
+	width: 100%;
+}
+
+.sectionGroup > div+ div {
+	border-left : 1px solid #ddd;
+}
+
+.sectionDiv, .sectionDiv > form {
+	position : relative;
+	padding-left : 45px;
+	height : 50px;
+	font-size : 15px;
+	text-align : left;
+	width : 100%;
+	display : flex;
+	align-items: center;
+}
+	
+.sectionIcon, .sectionText {
+	display : inline-block;
+	white-space: nowrap;
+}
+	
+.sectionDiv > form {
+	padding-left: 0;
+}
+	
+.sectionDiv > form > button {
+	width : 100%;
+	height: 100%;
+	border : none;
+	padding : 0;
+	float : right;
+}
+
+.sectionIcon {
+	display : inline-block;
+	font-size : 1.5em;
+	margin-right: 5px;
+}
+
+.sectionText {
+	max-width: 90%;
+	font-weight: 300;
+	font-size : 1.0em;
+}
+
+.sectionActive > .sectionDiv > .sectionText {
+	font-weight: 600;
+	font-size : 1.2em;
+}
+
+input[class=sectionText]{
+	padding: 0 30px 0 45px;
+	width: 359px;
+	height: 48px;
+	border: 0;
+	box-sizing : border-box;
+	color: #666;
+	font-size: 15px;
+	line-height: 45px;
+	background: #fff;
+}
+ 	
+.optionContent {
+	border : 1px solid #ddd;
+	min-height: 150px;
+}
+ 	
+.optionContent > div {
+	display: inline-block;
+	width: 13%;
+	margin : 5px 0px 5px 20px;
+	padding : 5px;
+	white-space: nowrap;
+}
+ 	
+.recruit-group {
+	display : flex;
+	flex-flow: row wrap;
+	justify-content: space-between;
+	padding : 5px;
+}
+ 	
+.recruit {
+	margin : 5px;
+	border : 1px solid #ddd;
+	width : 32%;
+	-webkit-transform: scale(1);
+	transform: scale(1);
+	-webkit-transition: .5s ease-in-out;
+	transition: .5s ease-in-out;
+	position: relative;
+}
+ 	
+.recruit:hover {
+	-webkit-transform: scale(1.05);
+	transform : scale(1.05);
+	box-shadow: 5px 5px 25px 0 rgba(0, 0, 0, 0.14);
+}
+ 	
+.recruit > .card-body {
+	margin-bottom: 25px;
+}
+
+.recLogo {
+	width : 100%;
+	height: 180px;
+	object-fit : scale-down;
+}
+
+.card_title_ {
+	font-size : 1.2rem;
+	font-weight: 600;
+}
+
+.card_subtitle_ {
+	font-size : 1.0rem;
+	font-weight : 400;
+	color : #333333;
+}
+
+.card_text_ {
+	font-size : 0.8rem;
+	white-space: nowrap;
+	font-weight: 350;
+}
+
+.card_footer_ {
+	position : absolute;
+	bottom : 2%;
+	right : 2%;
+	margin-top : 10px;
+}
+
+.card_footer_ > span {
+	font-size : 1rem;
+	font-weight: 350;
+}
+
+.likeIcon:hover {
+	color : gold;
+	font-weight : 900;
+}
+
+#pagingArea {
+	float : right;
+	margin : 5px;
+}
+
+/*************************/
+/***** RecruitDetail *****/
+/*************************/
+
+.recDetail {
+	padding-bottom: 30px;
+}
+
+.recSubTitleText {
+	margin : 0px 15px 5px 45px;
+	padding-top : 25px;
+	display : block;
+	font-size : 1.2rem;
+	font-weight : 400;
+}
+
+.recSubTitleText+ .recTitleText {
+	margin : 0 15px 15px 45px;
+}
+
+.applicationMenu {
+	position: absolute;
+	right: 0;
+	top: 0;
+	height : 100%;
+	display : flex;
+	align-items : center;
+}
+
+.appBtn {
+	border: none;
+	display: block;
+	text-align: center;
+	cursor: pointer;
+	text-transform: uppercase;
+	outline: none;
+	overflow: hidden;
+	position: relative;
+	color: #000000;
+	font-weight: 700;
+	font-size: 15px;
+	background-color: #ffffff;
+	padding: 15px 60px;
+	margin: 0 auto;
+	box-shadow: 0 5px 15px rgba(0,0,0,0.20);
+}
+
+.appBtn span {
+	position: relative;
+	font-weight : 700;
+	z-index: 1;
+}
+
+.appBtn:after {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 490%;
+	width: 140%;
+	background: #0080ff;
+	-webkit-transition: all .5s ease-in-out;
+	transition: all .5s ease-in-out;
+	-webkit-transform: translateX(-98%) translateY(-25%) rotate(45deg);
+	transform: translateX(-98%) translateY(-25%) rotate(45deg);
+}
+
+.appBtn:hover:after {
+	-webkit-transform: translateX(-9%) translateY(-25%) rotate(45deg);
+	transform: translateX(-9%) translateY(-25%) rotate(45deg);
+}
+
+.likeBtn {
+	margin-right : 10px;
+	padding : 15px;
+	border : 2px solid #2E9D50;
+	background: none;
+	color : #2E9D50;
+	aspect-ratio : 1;
+}
+
+.likeBtnReverse {
+	margin-right : 10px;
+	padding : 15px;
+	border : 2px solid #2E9D50;
+	background : #2E9D50;
+	color : #ffffff;	
+	aspect-ratio : 1;
+}
+
+.recDesc {
+	margin : 15px 15px 15px 45px;
+	width: 100%;
+	display: flex;
+}
+
+.recFiles {
+	margin : 15px 15px 15px 45px;
+	width: 100%;
+}
+
+.descLeft, .descRight {
+	width : 50%;
+}
+
+.descColumn * {
+	font-weight : 400;
+}
+
+.descColumn > label {
+	width : 25%;
+}
+
+.recMainContent {
+	width : 100%;
+	min-height : 600px;
+	display: flex;
+	flex-direction: column;
+	align-items : center;
+/* 	flex-wrap : wrap; */
+/* 	justify-content: center; */
+}
+
+.recLocationContent, .recApplicationContent, .recApplyStatContent, .recCompanyContent {
+	width : 100%;
+	position: relative;
+}
+
+.descTitle {
+	margin : 0px 15px 15px 45px;
+	font-size : 1.1rem;
+	font-weight : 600;
+}
+
+.descContent {
+	margin : 0px 15px 30px 45px;
+	width : 90%;
+	border : 1px solid #dddddd;
+	border-radius: 5px;
+}
+
+.mapDesc {
+	margin : 15px;
+	font-weight: 400;
+	font-size : 1.0rem;
+}
+
+.dateInfo {
+	margin: 10px;
+}
+.dateInfo * {
+	font-weight: 400;
+}
+
+.dateInfo > label {
+	display : inline-block;
+	width : 15%;
+}
+
+.companyInfo {
+	margin : 10px;
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+.coInfoImg {
+	position : absolute;
+	width : 200px;
+	right : 0;
+	top : 2%;
+	object-fit : scale-down;
+	aspect-ratio : 2;
+	border : 1px solid #cccccc;
+}
+
+.comTitle {
+	width: 100%;
+	display: block;
+	font-weight : 700;
+	font-size : 1.2rem;
+	height: 50px;
+}
+
+.comLeft, .comRight {
+	width : 50%;
+}
+
+
+/******************************/
+/***** 공고 지원 모달 CSS *****/
+/******************************/
+
+.myRsmUl {
+	position : relative;
+	display : table;
+	table-layout : fixed;
+	width : 100%;
+	padding : 12px 0;
+	margin-bottom : 0;
+	border-top : 1px solid #cccccc;
+	list-style : none;
+}
+
+.myRsmUl:last-child {
+	border-bottom : 1px solid #cccccc;
+	margin-bottom : 10px;
+}
+	
+.myRsmUl li {
+	display: table-cell;
+	vertical-align: middle;
+}
+	
+.myRsmUl li:nth-child(1){
+	width : 70px;
+	text-align: left;
+}
+
+
+/*******************************/
+/***** 이력서 미리보기 CSS *****/
+/*******************************/
+
+@font-face {
+	font-family: 'Pretendard-Regular';
+	src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+	font-weight: 400;
+	font-style: normal;
+}
+
+#prevModal {
+	height: 100%;
+}
+
+.rsmPage {
+	width: 210mm;
+	min-height : 100%;
+	margin: 10mm auto;
+	border: 1px #D3D3D3 solid;
+	border-radius: 5px;
+	background: white;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+	overflow: auto;
+}
+
+.rsmPage * {
+	font-family: 'Pretendard-Regular';
+	font-size : 10px;
+}
+
+.pageContent {
+    padding: 0 20px;
+    border: 1px #888 solid;
+    min-height: 257mm;
+	overflow-y : auto;
+    position: relative;
+}
+
+.prevHeader {
+	margin : 15px 0;
+	width : 100%;
+	display: flex;
+}
+
+.prevHeaderLeft, .prevHeaderRight {
+	width: 50%;
+}
+.prevHeaderLeft {
+	display : flex;
+	flex-direction : column;
+	justify-content : center;
+}
+.prevTitle {
+	font-size : 24px;
+	font-weight: 700;
+}
+
+.prevTitle:first-child {
+	color : #ccc;
+}
+.prevTitle:last-child {
+	color : #000;
+}
+
+.prevProfilePhoto {
+	float: right;
+	height: 140px;
+}
+
+.prevContent {
+	width : 100%;
+}
+
+.prevContentMenu {
+	border-top: 3px solid #000000;
+	display: flex;
+	flex-direction: column;
+}
+
+.menuItem {
+	display: flex;
+	align-items: center;
+	height: 30px;
+}
+
+.menuItem+ .menuItem {
+	border-top : 1px solid #ccc;
+}
+
+.menuItem:last-child {
+	border-bottom : 1px solid #ccc;
+	margin-bottom : 15px;
+}
+
+.menuItemTitle {
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.menuItemNick {
+	width : 15%;
+	text-align : center;
+	color : #333333;
+}
+
+.menuItemDesc {
+	width : 80%;
+}
+
+.menuItemHeader {
+	width : 100%;
+	display : flex;
+	border-top : 2px solid #ccc;
+	border-bottom : 2px double #ccc;
+}
+
+.menuItemHeader > div {
+	text-align : center;
+	font-weight : 500;
+	font-size : 12px;
+}
+
+.menuItem > div {
+	text-align : center;
+}
+
+.prevPortfolio {
+	border : 1px solid #ccc;
+	width : 100%;
+	min-height: 150px;
+}
+
+#printPDF {
+	position: absolute;
+	right: 2%;
+	top: 1%;
+}
+
+#appRsmBtn {
+	position: absolute;
+	right: 5%;
+	top : 1%;
+}
+
+.applyText {
+	margin : 3px 0;
+	font-weight: 400;
+}

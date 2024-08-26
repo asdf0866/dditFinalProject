@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IFAQMapper">
+
+	<sql id="faqSearch">
+		<if test="searchWord != null and searchWord != ''">
+			and (title like '%' || #{searchWord} || '%')
+		</if>
+		<if test="searchType != null and searchType != ''">
+			and faq_stat_code = #{searchType}
+		</if>
+	</sql>
+
+	<insert id="faqWrite" parameterType="faqVO">
+		insert into board_faq(
+			FAQ_NO, TITLE, CONTENT, HIT, FAQ_STAT_CODE
+			)
+		values(
+			seq_faq.nextval, #{title}, to_clob(#{content}), 0, #{faqStatCode}
+			)
+	</insert>
+	
+	<select id="getFAQList" resultType="faqVO">
+		select 
+			faq_no, title, content, hit
+		from board_faq
+	</select>
+	
+	<update id="faqUpdate" parameterType="faqVO">
+		update board_faq
+		set 
+			title = #{title},
+		    content = #{content}
+		where faq_No = #{faqNo}
+	</update>
+	
+	<delete id="faqDelete" parameterType="int">
+		delete from board_faq where faq_no = #{faqNo}
+	</delete>
+	
+	<update id="increaseHit" parameterType="int">
+		update board_faq
+		set hit = hit + 1
+		where faq_no = #{faqNo}
+	</update>
+	
+	<select id="selectFaqCount" parameterType="pagingVo" resultType="int">
+		select count(faq_no)
+		from board_faq
+		where 1=1
+		<include refid="faqSearch"/>
+	</select>
+	
+	<select id="selectFaqList" parameterType="pagingVo" resultType="faqVO">
+		select
+			b.*
+		from (
+			select
+				a.*, row_number() over (order by a.faq_no desc) rnum
+			from(
+				select
+					faq_no, title, content, hit, faq_stat_code
+				from board_faq
+				where 1=1
+				<include refid="faqSearch"/>
+				order by faq_no desc
+			) a
+		) b
+		<![CDATA[
+			where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

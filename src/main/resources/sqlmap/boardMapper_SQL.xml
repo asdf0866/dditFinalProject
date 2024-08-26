@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IConsultingMapper">
+	<sql id="consultingSearch">
+		<if test="searchType != null and searchType == 'title'">
+			and (title like '%' || #{searchWord} || '%')
+		</if>
+
+		<if test="searchType != null and searchType == 'writer'">
+			and (writer like '%' || #{searchWord} || '%')
+		</if>
+		
+		<if test="memId != null and memId != ''">
+			and writer = #{memId}
+		</if>
+	</sql>
+
+	<resultMap type="boardVO" id="boardMap">
+		<id property="boardNo" column="board_no" />
+		<result property="boardNo" column="board_no" />
+		<result property="title" column="title" />
+		<result property="content" column="content" />
+		<result property="writer" column="writer" />
+		<result property="wrtDt" column="wrt_DT" />
+		<result property="hit" column="hit" />
+	</resultMap>
+
+	<resultMap type="fileVO" id="fileMap">
+		<id property="fileSerialNo" column="file_serial_no" />
+		<result property="fileSerialNo" column="file_serial_no" />
+		<result property="fileOriginName" column="file_origin_name" />
+		<result property="fileSize" column="file_size" />
+		<result property="fileSaveName" column="file_save_name" />
+		<result property="fileContentType" column="file_content_type" />
+		<result property="filePath" column="file_path" />
+		<result property="fileRegYmd" column="file_reg_ymd" />
+		<result property="fileChgYmd" column="file_chg_ymd" />
+		<result property="fileDelYn" column="file_del_yn" />
+	</resultMap>
+
+	<!-- public int consultingInsert(BoardVO board) -->
+	<insert id="consultingInsert" parameterType="boardVO">
+		<selectKey resultType="String" order="BEFORE"
+			keyProperty="boardNo">
+			SELECT SUBSTR(MAX(BOARD_NO),1,5) ||
+			(TRIM(TO_CHAR(SUBSTR(MAX(BOARD_NO),6) +
+			1,'00000')))
+			FROM BOARD
+			WHERE
+			BOARD_NO LIKE 'BOARD%'
+		</selectKey>
+
+		insert into board(
+		BOARD_NO, WRITER, TITLE,
+		CONTENT, WRT_DT
+		<if test="attachFile!=null and attachFile!=''">
+			, ATTACH_FILE
+		</if>
+		, HIT, BOARD_STAT_CODE)
+		values(#{boardNo}
+		, #{writer}, #{title},
+		#{content}, SYSDATE
+		<if test="attachFile!=null and attachFile!=''">
+			, #{attachFile}
+		</if>
+		,0, #{boardStatCode})
+	</insert>
+
+	<!-- detail -->
+	<resultMap type="boardVO" id="boardMap2">
+		<result property="boardNo" column="BOARD_NO"/>
+		<result property="writer" column="WRITER"/>
+		<result property="title" column="TITLE"/>
+		<result property="content" column="CONTENT"/>
+		<result property="wrtDt" column="WRT_DT"/>
+		<result property="attachFile" column="ATTACH_FILE"/>
+		<result property="hit" column="HIT"/>
+		<result property="boardStatCode" column="BOARD_STAT_CODE"/>
+		<collection property="fileList" resultMap="attachFileMap2"></collection>
+	</resultMap>
+	
+	<resultMap type="fileVO" id="attachFileMap2">
+		<result property="fileId" column="FILE_ID"/>
+		<result property="fileSerialNo" column="FILE_SERIAL_NO"/>
+		<result property="fileOriginName" column="FILE_ORIGIN_NAME"/>
+		<result property="fileSaveName" column="FILE_SAVE_NAME"/>
+		<result property="fileContentType" column="FILE_CONTENT_TYPE"/>
+		<result property="fileSize" column="FILE_SIZE"/>
+		<result property="filePath" column="FILE_PATH"/>
+		<result property="fileRegYmd" column="FILE_REG_YMD"/>
+		<result property="fileChgYmd" column="FILE_CHG_YMD"/>
+		<result property="fileDelYn" column="FILE_DEL_YN"/>
+	</resultMap>
+	
+	<select id="selectConsulting" parameterType="String"
+		resultMap="boardMap2">
+		select a.BOARD_NO, a.WRITER, a.TITLE, a.CONTENT, a.WRT_DT
+		     , a.ATTACH_FILE, a.HIT, a.BOARD_STAT_CODE
+		     , b.FILE_ID, b.FILE_SERIAL_NO, b.FILE_ORIGIN_NAME, b.FILE_SAVE_NAME, b.FILE_CONTENT_TYPE
+		     , b.FILE_SIZE, b.FILE_PATH, b.FILE_REG_YMD, b.FILE_CHG_YMD, b.FILE_DEL_YN
+		from board a left outer join attach_file b on(a.attach_file = b.file_id)
+		where  a.board_no = #{boardNo}
+	</select>
+
+	<!-- 목록 -->
+	<select id="selectConsultingList" parameterType="PagingVO"
+		resultType="boardVO">
+		select b.*
+		from (
+			select
+			a.* , row_number() over(order by a.board_no desc) rnum
+			from(
+				select
+				board_no, title,content, writer, wrt_dt, hit
+		
+				from board
+				where board_no like 'BOARD'||'%'
+				<include refid="consultingSearch" />
+			) a
+		) b
+	 	<![CDATA[
+			where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+
+	</select>
+
+	<select id="selectConsultingCount" parameterType="pagingVO"
+		resultType="int">
+		select count(board_no)
+		from board
+		where 1=1
+		and  board_no like 'BOARD'||'%'
+		<include refid="consultingSearch" />
+	</select>
+
+	<select id="selectBoard" parameterType="string"
+		resultMap="boardMap">
+		select
+		board_no , title , content, writer, wrt_dt, hit
+		from
+		board
+		where board_no = #{boardNo}
+	</select>
+
+
+	<update id="incrementHit" parameterType="string">
+		update board
+		set
+		hit = hit
+		+ 1
+		where board_No = #{boardNo}
+	</update>
+
+	<update id="updateConsulting" parameterType="boardVO">
+		update board
+		set
+		title = #{title},
+		content = #{content},
+		wrt_dt = sysdate
+		where board_no =
+		#{boardNo}
+	</update>
+
+	<delete id="delete" parameterType="string">
+		delete from board
+		where
+		board_no = #{boardNo}
+	</delete>
+
+	<!-- 파일 쿼리문 -->
+	<insert id="updateAttachFile" parameterType="fileVO">
+		INSERT INTO ATTACH_FILE(FILE_ID, FILE_SERIAL_NO, FILE_ORIGIN_NAME, FILE_SAVE_NAME, FILE_CONTENT_TYPE, FILE_SIZE, FILE_PATH, FILE_REG_YMD, FILE_CHG_YMD, FILE_DEL_YN)
+		VALUES(#{fileId}, #{fileSerialNo}, #{fileOriginName}, #{fileSaveName}, #{fileContentType}
+			 , #{fileSize}, #{filePath}, TO_CHAR(SYSDATE,'YYYYMMDD'), NULL, 'N')
+	</insert>
+
+	<select id="selectConsultingFile" parameterType="int" resultType="fileVO">
+		select
+		file_path
+		from attach_file
+		where file_serial_no = #{fileSerialNo}
+	</select>
+
+	<!-- 댓글 목록 -->
+	<select id="commentList" parameterType="String" resultType="replyVO">
+		SELECT ROW_NUMBER() OVER(ORDER BY A.REPLY_NO DESC) RNUM
+		     , A.REPLY_NO, A.PARENT_REPLY_NO, A.MEM_ID
+		     , (SELECT B.NAME FROM MEMBER B WHERE B.MEM_ID = A.MEM_ID) NAME
+		     , A.BOARD_ID, A.REPLY_CONTENT
+		     , TO_CHAR(A.REPLY_WRT_DT,'YYYY-MM-DD ') REPLY_WRT_DT, A.DEL_YN
+		  FROM BOARD_REPLY A
+	     WHERE A.BOARD_ID = #{boardNo} and A.DEL_YN = 'N'
+	</select>
+
+
+		<select id="getPopular5" resultMap="boardMap"  parameterType="string">
+		select
+		board_no , title , content, writer, wrt_dt, hit
+		from
+		board
+		where hit >= 100  AND board_no LIKE 'BOARD%'
+			
+		</select>
+	
+
+
+
+
+</mapper>

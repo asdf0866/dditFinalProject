@@ -1,0 +1,52 @@
+/*************************************************************/
+/******************      RECRUIT FORM      *******************/
+/*************************************************************/
+
+.recruitForm {
+	font-size : large;
+	font-weight: bold;
+}
+
+.formTitle {
+	font-size: x-large;
+	font-weight: bold;
+}
+
+.dashboardCard {
+	min-height: 400px;
+	max-height: 400px;
+}
+
+.card-chart {
+	display: flex;
+}
+.card-left, .card-right {
+	width : 50%;
+}
+
+.starArea {
+	width: 100%;
+	padding : 5px;
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
+	border: none;
+}
+
+.star {
+	width: 35px; 
+	height: 35px; 
+	display: inline-block; 
+	background: url('https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FE2bww%2FbtsviSSBz4Q%2F5UYnwSWgTlFt6CEFZ1L3Q0%2Fimg.png') no-repeat; 
+	background-size: 100%; 
+	box-sizing: border-box; 
+}
+
+.star.on {
+	width: 35px; 
+	height: 35px;
+	display: inline-block; 
+	background: url('https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fb2d6gV%2FbtsvbDoal87%2FXH5b17uLeEJcBP3RV3FyDk%2Fimg.png') no-repeat;
+	background-size: 100%; 
+	box-sizing: border-box; 
+}

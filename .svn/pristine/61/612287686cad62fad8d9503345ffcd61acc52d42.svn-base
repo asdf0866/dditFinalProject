@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+	</settings>
+	
+	<typeAliases>
+		<typeAlias type="kr.or.ddit.vo.MemberVO" alias="memberVO" />
+		<typeAlias type="kr.or.ddit.vo.MemberAuthVO" alias="memberAuthVO" />
+		<typeAlias type="kr.or.ddit.vo.CompanyVO" alias="companyVO" />
+		<typeAlias type="kr.or.ddit.vo.CompanyReviewVO" alias="comReviewVO" />
+		
+		<typeAlias type="kr.or.ddit.vo.BoardVO" alias="boardVO" />
+		<typeAlias type="kr.or.ddit.vo.FAQVO" alias="faqVO" />
+		<typeAlias type="kr.or.ddit.vo.QNAVO" alias="qnaVO" />
+		<typeAlias type="kr.or.ddit.vo.AnswerQnaVO" alias="answerQnaVO" />
+		<typeAlias type="kr.or.ddit.vo.PaginationInfoVO" alias="pagingVO" />
+		<typeAlias type="kr.or.ddit.vo.BoardReplyVO" alias="replyVO" />
+		<typeAlias type="kr.or.ddit.vo.ReportVO" alias="reportVO" />
+		
+		<typeAlias type="kr.or.ddit.vo.AttachFileVO" alias="fileVO" />
+		<typeAlias type="kr.or.ddit.vo.CommonCodeVO" alias="codeVO" />
+		<typeAlias type="kr.or.ddit.vo.CommonCodeDetailVO" alias="codeDetailVO" />
+		
+		<typeAlias type="kr.or.ddit.vo.RecruitmentVO" alias="recruitVO" />
+		
+		<typeAlias type="kr.or.ddit.vo.ResumeVO" alias="resumeVO" />
+		<typeAlias type="kr.or.ddit.vo.ResumeCareerVO" alias="rsmCareerVO" />
+		<typeAlias type="kr.or.ddit.vo.ResumeCertificateVO" alias="rsmCertVO" />
+		<typeAlias type="kr.or.ddit.vo.ResumeDocumentVO" alias="rsmDocumentVO" />
+		<typeAlias type="kr.or.ddit.vo.ResumeEducationVO" alias="rsmEducationVO" />
+		<typeAlias type="kr.or.ddit.vo.ResumeMilServiceVO" alias="rsmMilServiceVO" />
+		
+		<typeAlias type="kr.or.ddit.vo.ApplicationVO" alias="applyVO" />
+		<typeAlias type="kr.or.ddit.vo.ApplicationDocumentVO" alias="applyDocVO" />
+		
+		<typeAlias type="kr.or.ddit.vo.InterestCompanyVO" alias="intCompanyVO" />
+		<typeAlias type="kr.or.ddit.vo.InterestJobTypeVO" alias="intJobTypeVO" />
+		<typeAlias type="kr.or.ddit.vo.InterestRecruitVO" alias="intRecruitVO" />
+		
+	</typeAliases>
+	
+</configuration>

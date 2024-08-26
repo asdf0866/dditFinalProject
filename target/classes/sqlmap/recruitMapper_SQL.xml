@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IRecruitMapper">
+
+	<sql id="recSearch">
+		<if test="regType != null and regType != ''">
+			AND (CO_ADDRESS_BASIC LIKE '%' || #{regType} || '%')
+		</if>
+		<if test="jobType != null and jobType != ''">
+			AND (RECRUIT_JOB LIKE '%' || #{jobType} || '%')
+		</if>
+		<if test="searchWord != null and searchWord != ''">
+			AND (TITLE LIKE '%' || #{searchWord} || '%')
+		</if>
+	</sql>
+	
+	<sql id="pageHeader">
+		select b.*
+		  from (
+		  	select a.*, row_number() over (order by a.RECRUIT_NO desc) rnum
+		  	  from (
+	</sql>
+	
+	<sql id="pageFooter">
+				) a
+			) b
+		<![CDATA[
+		WHERE b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</sql>
+
+	<select id="getRecListCommons" resultType="recruitVO">
+		<![CDATA[
+		SELECT RECRUIT_NO, CO_MEM_ID, TITLE, CONTENT, REQUIRED_EDUCATION, REQUIRED_QUALIFICATION
+			 , RECRUIT_JOB, RECRUIT_BGNG_YMD, RECRUIT_BGNG_DT, RECRUIT_DDLN_YMD, RECRUIT_DDLN_DT
+			 , WORK_TIME, WORK_TYPE, SALARY, CO_POSTCODE, CO_ADDRESS_BASIC, CO_ADDRESS_DETAIL
+			 , RECRUIT_COUNT, RECRUIT_REG_YMD, HIT, ATTACH_FILE, ALL_RECRUIT_YN, SELF_RSM_YN
+			 , RECRUIT_STAT_CODE, CM.CO_NO, CP.CO_NAME, CP.CO_LOGO_PATH
+		  FROM RECRUIT_ANNOUNCEMENT RA
+		  LEFT OUTER JOIN CO_MEMBER CM ON (RA.CO_MEM_ID = CM.MEM_ID)
+		  LEFT OUTER JOIN COMPANY CP ON (CM.CO_NO = CP.CO_NO)
+		 WHERE 1 = 1
+		   AND SYSDATE < TO_DATE((RECRUIT_DDLN_YMD||RECRUIT_DDLN_DT),'yyyyMMddhh24mi')
+		   AND RECRUIT_STAT_CODE = 'RECSTAT001'
+		 ORDER BY RECRUIT_NO DESC
+		 ]]>
+	</select>
+	
+	<select id="getRecList" parameterType="pagingVO" resultType="recruitVO">
+		<include refid="pageHeader"/>
+		SELECT RECRUIT_NO, CO_MEM_ID, TITLE, CONTENT, REQUIRED_EDUCATION, REQUIRED_QUALIFICATION
+			 , RECRUIT_JOB, RECRUIT_BGNG_YMD, RECRUIT_BGNG_DT, RECRUIT_DDLN_YMD, RECRUIT_DDLN_DT
+			 , WORK_TIME, WORK_TYPE, SALARY, CO_POSTCODE, CO_ADDRESS_BASIC, CO_ADDRESS_DETAIL
+			 , RECRUIT_COUNT, RECRUIT_REG_YMD, HIT, ATTACH_FILE, ALL_RECRUIT_YN, SELF_RSM_YN
+			 , RECRUIT_STAT_CODE, CM.CO_NO, CP.CO_NAME, CP.CO_LOGO_PATH
+		  FROM RECRUIT_ANNOUNCEMENT RA
+		  LEFT OUTER JOIN CO_MEMBER CM ON (RA.CO_MEM_ID = CM.MEM_ID)
+		  LEFT OUTER JOIN COMPANY CP ON (CM.CO_NO = CP.CO_NO)
+		 WHERE 1 = 1
+			<![CDATA[
+		   AND SYSDATE < TO_DATE((RECRUIT_DDLN_YMD||RECRUIT_DDLN_DT),'yyyyMMddhh24mi')
+		 	]]>
+		   AND RECRUIT_STAT_CODE = 'RECSTAT001'
+		<include refid="recSearch"/>
+		 ORDER BY RECRUIT_NO DESC
+		<include refid="pageFooter" />
+	</select>
+	
+	<select id="getCompanyRecList" parameterType="map" resultType="recruitVO">
+		<include refid="pageHeader"/>
+		SELECT RECRUIT_NO, CO_MEM_ID, TITLE, CONTENT, REQUIRED_EDUCATION, REQUIRED_QUALIFICATION
+			 , RECRUIT_JOB, RECRUIT_BGNG_YMD, RECRUIT_BGNG_DT, RECRUIT_DDLN_YMD, RECRUIT_DDLN_DT
+			 , WORK_TIME, WORK_TYPE, SALARY, CO_POSTCODE, CO_ADDRESS_BASIC, CO_ADDRESS_DETAIL
+			 , RECRUIT_COUNT, RECRUIT_REG_YMD, HIT, ATTACH_FILE, ALL_RECRUIT_YN, SELF_RSM_YN
+			 , RECRUIT_STAT_CODE, CM.CO_NO, CP.CO_NAME, CP.CO_LOGO_PATH
+		  FROM RECRUIT_ANNOUNCEMENT RA
+		  LEFT OUTER JOIN CO_MEMBER CM ON (RA.CO_MEM_ID = CM.MEM_ID)
+		  LEFT OUTER JOIN COMPANY CP ON (CM.CO_NO = CP.CO_NO)
+		 WHERE 1 = 1
+			<![CDATA[
+		   AND SYSDATE < TO_DATE((RECRUIT_DDLN_YMD||RECRUIT_DDLN_DT),'yyyyMMddhh24mi')
+		 	]]>
+		   AND RECRUIT_STAT_CODE = 'RECSTAT001'
+		   AND CP.CO_NO = #{coNo} 
+		 ORDER BY RECRUIT_NO DESC
+		<include refid="pageFooter" />
+	</select>
+	
+	<select id="getRecruitCount" parameterType="pagingVO" resultType="int">
+		SELECT COUNT(RECRUIT_NO)
+		  FROM RECRUIT_ANNOUNCEMENT
+		 WHERE 1 = 1
+		<![CDATA[
+		   AND SYSDATE < TO_DATE((RECRUIT_DDLN_YMD||RECRUIT_DDLN_DT),'yyyyMMddhh24mi')
+		 ]]>
+		   AND RECRUIT_STAT_CODE = 'RECSTAT001'
+		<include refid="recSearch"/>
+	</select>
+	
+	<select id="getCompanyRecruitCount" parameterType="String" resultType="int">
+		SELECT COUNT(RECRUIT_NO)
+		  FROM RECRUIT_ANNOUNCEMENT RA, CO_MEMBER CM
+		 WHERE 1 = 1
+		<![CDATA[
+		   AND SYSDATE < TO_DATE((RECRUIT_DDLN_YMD||RECRUIT_DDLN_DT),'yyyyMMddhh24mi')
+		 ]]>
+		   AND RECRUIT_STAT_CODE = 'RECSTAT001'
+		   AND RA.CO_MEM_ID = CM.MEM_ID
+		   AND CM.CO_NO = #{coNo}
+	</select>
+	
+	<select id="getRecruit" parameterType="int" resultType="recruitVO">
+		SELECT RECRUIT_NO, CO_MEM_ID, TITLE, CONTENT, REQUIRED_EDUCATION, REQUIRED_QUALIFICATION
+			 , RECRUIT_JOB, RECRUIT_BGNG_YMD, RECRUIT_BGNG_DT, RECRUIT_DDLN_YMD, RECRUIT_DDLN_DT
+			 , WORK_TIME, WORK_TYPE, SALARY, CO_POSTCODE, CO_ADDRESS_BASIC, CO_ADDRESS_DETAIL
+			 , RECRUIT_COUNT, RECRUIT_REG_YMD, HIT, ATTACH_FILE, ALL_RECRUIT_YN, SELF_RSM_YN
+			 , RECRUIT_STAT_CODE, CM.CO_NO, CP.CO_NAME, CP.CO_LOGO_PATH
+		  FROM RECRUIT_ANNOUNCEMENT RA
+		  LEFT OUTER JOIN CO_MEMBER CM ON (RA.CO_MEM_ID = CM.MEM_ID)
+		  LEFT OUTER JOIN COMPANY CP ON (CM.CO_NO = CP.CO_NO)
+		 WHERE 1 = 1
+		   AND RECRUIT_NO = #{recruitNo}
+	</select>
+	
+	<select id="getHomeRecList" parameterType="int" resultType="recruitVO">
+		SELECT a.*
+		  FROM (
+			SELECT RECRUIT_NO, CO_MEM_ID, TITLE, CONTENT, REQUIRED_EDUCATION, REQUIRED_QUALIFICATION
+				 , RECRUIT_JOB, RECRUIT_BGNG_YMD, RECRUIT_BGNG_DT, RECRUIT_DDLN_YMD, RECRUIT_DDLN_DT
+				 , CO_POSTCODE, CO_ADDRESS_BASIC, CO_ADDRESS_DETAIL
+				 , CP.CO_NAME, CP.CO_LOGO_PATH
+		      FROM RECRUIT_ANNOUNCEMENT RA
+		      LEFT OUTER JOIN CO_MEMBER CM ON (RA.CO_MEM_ID = CM.MEM_ID)
+		      LEFT OUTER JOIN COMPANY CP ON (CM.CO_NO = CP.CO_NO)
+		     WHERE 1 = 1
+		     <![CDATA[
+		       AND SYSDATE < TO_DATE((RECRUIT_DDLN_YMD||RECRUIT_DDLN_DT),'yyyyMMddhh24mi')
+		       AND RECRUIT_STAT_CODE = 'RECSTAT001'
+		     ORDER BY RECRUIT_NO DESC) a
+		 WHERE ROWNUM <= #{qty}
+		     ]]>
+	</select>
+	
+	<select id="getDashBoardRecList" parameterType="String" resultType="recruitVO">
+		SELECT a.*
+		  FROM (
+			SELECT RECRUIT_NO, CO_MEM_ID, TITLE, CONTENT, REQUIRED_EDUCATION, REQUIRED_QUALIFICATION
+				 , RECRUIT_JOB, RECRUIT_BGNG_YMD, RECRUIT_BGNG_DT, RECRUIT_DDLN_YMD, RECRUIT_DDLN_DT
+				 , CO_POSTCODE, CO_ADDRESS_BASIC, CO_ADDRESS_DETAIL, HIT
+				 , CP.CO_NAME, CP.CO_LOGO_PATH
+		      FROM RECRUIT_ANNOUNCEMENT RA
+		      LEFT OUTER JOIN CO_MEMBER CM ON (RA.CO_MEM_ID = CM.MEM_ID)
+		      LEFT OUTER JOIN COMPANY CP ON (CM.CO_NO = CP.CO_NO)
+		     WHERE 1 = 1
+		       AND CM.CO_NO = #{coNo}
+		     <![CDATA[
+		       AND SYSDATE < TO_DATE((RECRUIT_DDLN_YMD||RECRUIT_DDLN_DT),'yyyyMMddhh24mi')
+		       AND RECRUIT_STAT_CODE = 'RECSTAT001'
+		     ORDER BY RECRUIT_NO DESC) a
+		 WHERE ROWNUM <= 5
+		     ]]>
+	</select>
+	
+	<select id="getGenderChart" parameterType="map" resultType="map">
+		SELECT count(rsm.RSM_NO) AS TOTAL, count(CASE WHEN nm.GENDER = 'W' THEN 1 END) AS WOMAN, count(CASE WHEN nm.GENDER = 'M' THEN 1 END) AS MAN
+		  FROM COMMON_MEMBER nm, RESUME rsm, APPLICATION ap
+		     , (SELECT RECRUIT_NO, CO_MEM_ID, TITLE, CONTENT, REQUIRED_EDUCATION, REQUIRED_QUALIFICATION
+		     	     , RECRUIT_JOB, RECRUIT_BGNG_YMD, RECRUIT_BGNG_DT, RECRUIT_DDLN_YMD, RECRUIT_DDLN_DT
+		     	     , CO_POSTCODE, CO_ADDRESS_BASIC, CO_ADDRESS_DETAIL, CP.CO_NAME, CP.CO_LOGO_PATH
+		     	  FROM RECRUIT_ANNOUNCEMENT RA
+		     	  LEFT OUTER JOIN CO_MEMBER CM ON (RA.CO_MEM_ID = CM.MEM_ID)
+		     	  LEFT OUTER JOIN COMPANY CP ON (CM.CO_NO = CP.CO_NO)
+		     	 WHERE 1 = 1
+			     <![CDATA[
+		     	   AND SYSDATE < TO_DATE((RECRUIT_DDLN_YMD||RECRUIT_DDLN_DT),'yyyyMMddhh24mi')
+				     ]]>
+		     	   AND RECRUIT_STAT_CODE = 'RECSTAT001'
+				   <if test="coNo != null and coNo != ''">
+		     	   AND CP.CO_NO = #{coNo}
+		     	   </if>
+				   <if test="recruitNo != null and recruitNo != ''">
+				   AND RECRUIT_NO = #{recruitNo}
+				   </if>
+		     	 ORDER BY RECRUIT_NO DESC) a
+		 WHERE a.RECRUIT_NO = ap.RECRUIT_NO
+		   AND ap.RSM_NO = rsm.RSM_NO
+		   AND nm.MEM_ID = rsm.MEM_ID
+	</select>
+	
+	<select id="getRecentChart" parameterType="map" resultType="map">
+		SELECT COUNT(CASE WHEN APP_APPLY_YMD = TO_CHAR(SYSDATE, 'yyyyMMdd') THEN 1 END) AS TODAY
+			 , COUNT(CASE WHEN APP_APPLY_YMD = TO_CHAR(SYSDATE-1, 'yyyyMMdd') THEN 1 END) AS BEFORE1
+			 , COUNT(CASE WHEN APP_APPLY_YMD = TO_CHAR(SYSDATE-2, 'yyyyMMdd') THEN 1 END) AS BEFORE2
+			 , COUNT(CASE WHEN APP_APPLY_YMD = TO_CHAR(SYSDATE-3, 'yyyyMMdd') THEN 1 END) AS BEFORE3
+			 , COUNT(CASE WHEN APP_APPLY_YMD = TO_CHAR(SYSDATE-4, 'yyyyMMdd') THEN 1 END) AS BEFORE4
+		  FROM APPLICATION AP, RECRUIT_ANNOUNCEMENT RA, CO_MEMBER CMEM
+		 WHERE 1 = 1
+		   AND AP.RECRUIT_NO = RA.RECRUIT_NO
+		   AND RA.CO_MEM_ID = CMEM.MEM_ID
+		   <if test="coNo != null and coNo != ''">
+		   AND CMEM.CO_NO = #{coNo}
+		   </if>
+		   <if test="recruitNo != null and recruitNo != ''">
+		   AND AP.RECRUIT_NO = #{recruitNo}
+		   </if>
+	</select>
+	
+	<select id="getAgeRangeChart" parameterType="map" resultType="map">
+		<![CDATA[
+		SELECT COUNT(BRDT) AS TOTAL
+			 , COUNT(CASE WHEN SUBSTR(TO_CHAR(sysdate, 'yyyy/MM/dd'), 0, 4) - SUBSTR(BRDT, 0, 4) < 20 AND
+			 				   SUBSTR(TO_CHAR(sysdate, 'yyyy/MM/dd'), 0, 4) - SUBSTR(BRDT, 0, 4) >= 10 THEN 1 END) AS TEN
+			 , COUNT(CASE WHEN SUBSTR(TO_CHAR(sysdate, 'yyyy/MM/dd'), 0, 4) - SUBSTR(BRDT, 0, 4) < 30 AND
+			 				   SUBSTR(TO_CHAR(sysdate, 'yyyy/MM/dd'), 0, 4) - SUBSTR(BRDT, 0, 4) >= 20 THEN 1 END) AS TWENTY
+			 , COUNT(CASE WHEN SUBSTR(TO_CHAR(sysdate, 'yyyy/MM/dd'), 0, 4) - SUBSTR(BRDT, 0, 4) < 40 AND
+			 				   SUBSTR(TO_CHAR(sysdate, 'yyyy/MM/dd'), 0, 4) - SUBSTR(BRDT, 0, 4) >= 30 THEN 1 END) AS THIRTY
+			 , COUNT(CASE WHEN SUBSTR(TO_CHAR(sysdate, 'yyyy/MM/dd'), 0, 4) - SUBSTR(BRDT, 0, 4) < 50 AND
+			 				   SUBSTR(TO_CHAR(sysdate, 'yyyy/MM/dd'), 0, 4) - SUBSTR(BRDT, 0, 4) >= 40 THEN 1 END) AS FORTY
+			 , COUNT(CASE WHEN SUBSTR(TO_CHAR(sysdate, 'yyyy/MM/dd'), 0, 4) - SUBSTR(BRDT, 0, 4) < 60 AND
+			 				   SUBSTR(TO_CHAR(sysdate, 'yyyy/MM/dd'), 0, 4) - SUBSTR(BRDT, 0, 4) >= 50 THEN 1 END) AS FIFTY
+			]]>
+		  FROM COMMON_MEMBER cm, APPLICATION ap, RESUME rsm
+		 WHERE 1 = 1
+		   AND cm.MEM_ID = rsm.MEM_ID
+		   AND rsm.RSM_NO = ap.RSM_NO
+		   AND ap.RECRUIT_NO = #{recruitNo}
+	</select>
+
+	<update id="incrementRecHit" parameterType="int">
+		UPDATE RECRUIT_ANNOUNCEMENT
+		   SET HIT = HIT + 1
+		 WHERE RECRUIT_NO = #{recruitNo}
+	</update>
+</mapper>

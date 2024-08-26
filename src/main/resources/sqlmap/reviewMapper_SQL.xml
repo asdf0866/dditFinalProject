@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IReviewMapper">
+
+	<sql id="pageHeader">
+		select b.*
+		  from (
+		  	select a.*, row_number() over (order by a.REVIEW_NO desc) rnum
+		  	  from (
+	</sql>
+	
+	<sql id="pageFooter">
+				) a
+			) b
+		<![CDATA[
+		WHERE b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</sql>
+	
+	<insert id="reviewWrite" parameterType="comReviewVO">
+		<selectKey keyProperty="reviewNo" resultType="int" order="BEFORE">
+			select seq_review.nextval from dual
+        </selectKey>
+		INSERT INTO BOARD_CO_REVIEW(
+			REVIEW_NO, MEM_ID, CO_NO, TITLE, ONE_LINE_REVIEW, WRT_DT, WORK_YN
+			, CO_WELFARE_EVL, CO_SALARY_EVL, CO_CULTURE_EVL, CO_IMPROVE_EVL, CO_MANAGE_EVL
+			, CO_STRENGTHS, CO_WEAKNESSES, CO_WISH, HIT
+		)
+		VALUES(
+			#{reviewNo}, #{memId}, #{coNo}, #{title}, #{oneLineReview}, SYSDATE, #{workYn}
+			, #{coWelfareEvl}, #{coSalaryEvl}, #{coCultureEvl}, #{coImproveEvl}, #{coManageEvl}
+			, #{coStrengths}, #{coWeaknesses}, #{coWish}, 0
+		)
+	</insert>
+	
+	<select id="getCoReviewList" parameterType="map" resultType="comReviewVO">
+		<include refid="pageHeader"/>
+		SELECT REVIEW_NO, MEM_ID, CO_NO, TITLE, ONE_LINE_REVIEW, WRT_DT, WORK_YN
+			 , CO_WELFARE_EVL, CO_SALARY_EVL, CO_CULTURE_EVL, CO_IMPROVE_EVL, CO_MANAGE_EVL
+			 , CO_STRENGTHS, CO_WEAKNESSES, CO_WISH, HIT
+		  FROM BOARD_CO_REVIEW
+		 WHERE 1 = 1
+		   AND CO_NO = #{coNo}
+		 ORDER BY REVIEW_NO DESC
+		<include refid="pageFooter" />
+	</select>
+	
+	<select id="getCoReviewCount" parameterType="String" resultType="int">
+		SELECT COUNT(REVIEW_NO)
+		  FROM BOARD_CO_REVIEW
+		 WHERE 1 = 1
+		   AND CO_NO = #{coNo}
+	</select>
+	
+	<select id="getCoReviewScore" parameterType="String" resultType="map">
+		SELECT ROUND(AVG(CO_WELFARE_EVL), 1) AS WELFARE
+			 , ROUND(AVG(CO_SALARY_EVL), 1) AS SALARY
+			 , ROUND(AVG(CO_CULTURE_EVL), 1) AS CULTURE
+			 , ROUND(AVG(CO_IMPROVE_EVL), 1) AS IMPROVE
+			 , ROUND(AVG(CO_MANAGE_EVL), 1) AS MANAGE
+		  FROM BOARD_CO_REVIEW
+		 WHERE CO_NO = #{coNo}
+	</select>
+	
+	<select id="getFavoriteReview" resultType="comReviewVO">
+		select b.*
+		  from (
+		  	select a.*, ROWNUM as rnum
+		  	  from (	SELECT REVIEW_NO, MEM_ID, rev.CO_NO, TITLE, ONE_LINE_REVIEW, WRT_DT, WORK_YN
+		     				 , CO_WELFARE_EVL, CO_SALARY_EVL, CO_CULTURE_EVL, CO_IMPROVE_EVL, CO_MANAGE_EVL
+		     				 , CO_STRENGTHS, CO_WEAKNESSES, CO_WISH, HIT, CO_NAME
+		  				  FROM BOARD_CO_REVIEW rev, COMPANY com
+		  				 WHERE rev.CO_NO = com.CO_NO
+		 				 ORDER BY HIT DESC ) a
+		 				 ) b
+		<![CDATA[
+		WHERE b.rnum >= 1 and b.rnum <= 3
+		]]>
+	</select>
+	
+	<select id="getReviewHits" parameterType="companyVO" resultType="int">
+		SELECT NVL(SUM(HIT), 0) as TOTAL_REVIEW_HIT
+		  FROM BOARD_CO_REVIEW
+		 WHERE CO_NO = #{coNo}
+	</select>
+	
+	<select id="getRecentReview" parameterType="companyVO" resultType="String">
+		SELECT b.*
+		  FROM (SELECT a.*, ROWNUM rnum
+		          FROM (SELECT ONE_LINE_REVIEW AS RECENT_REVIEW
+		                  FROM BOARD_CO_REVIEW
+		                 WHERE CO_NO = #{coNo}
+		                 ORDER BY WRT_DT DESC) a ) b
+		 WHERE b.rnum = 1
+	</select>
+	
+	<select id="checkLikeReivew" parameterType="comReviewVO" resultType="int">
+		SELECT COUNT(*)
+		  FROM REVIEW_LIKES
+		 WHERE MEM_ID = #{memId}
+		   AND REVIEW_NO = #{reviewNo}
+	</select>
+	
+	<insert id="addLikeReview" parameterType="comReviewVO">
+		INSERT INTO REVIEW_LIKES(
+			LIKES_NO, MEM_ID, REVIEW_NO
+		)
+		VALUES(
+			seq_reviewLikes.nextval, #{memId}, #{reviewNo}
+		)
+	</insert>
+		
+</mapper>

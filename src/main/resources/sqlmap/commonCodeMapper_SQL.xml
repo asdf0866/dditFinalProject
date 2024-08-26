@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ICommonCodeMapper">
+
+	<select id="getCodeList" parameterType="String" resultType="codeVO">
+		SELECT COMMON_CODE, COMMON_CODE_NAME, COMMON_CODE_DESC
+		FROM COMMON_CODE
+		WHERE 1 = 1
+		AND COMMON_CODE LIKE '%'||#{code}||'%'
+	</select>
+	
+	<select id="getDetailList" parameterType="String" resultType="codeDetailVO">
+		SELECT COMMON_CODE, COMMON_CODE_DETAIL, COMMON_DETAIL_NAME, COMMON_DETAIL_DESC
+		FROM COMMON_CODE_DETAIL
+		WHERE 1 = 1
+		AND COMMON_CODE = #{commonCode}
+	</select>
+	
+	<select id="getDetailSearch" parameterType="map" resultType="codeDetailVO">
+		SELECT COMMON_CODE, COMMON_CODE_DETAIL, COMMON_DETAIL_NAME, COMMON_DETAIL_DESC
+		FROM COMMON_CODE_DETAIL
+		WHERE 1 = 1
+		AND COMMON_CODE_DETAIL LIKE #{typeName}||'%'
+		AND COMMON_DETAIL_NAME LIKE '%'||#{keyword}||'%'
+	</select>
+	
+	<select id="getCodeName" parameterType="String" resultType="String">
+		SELECT COMMON_DETAIL_NAME
+		FROM COMMON_CODE_DETAIL
+		WHERE 1 = 1
+		AND COMMON_CODE_DETAIL = #{code}
+	</select>
+	
+	<select id="getCommonCodeName" parameterType="String" resultType="String">
+		SELECT COMMON_CODE_NAME
+		FROM COMMON_CODE
+		WHERE 1 = 1
+		AND COMMON_CODE = #{code}
+	</select>
+</mapper>

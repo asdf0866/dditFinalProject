@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.ICompanyMapper">
+	
+	<sql id="pageHeader">
+   		select b.*
+		  from (
+		  	select a.*, ROWNUM as rnum
+		  	  from (
+	</sql>
+	
+	<sql id="pageFooter">
+				) a
+			) b
+		<![CDATA[
+		WHERE b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</sql>
+
+	<insert id="registerCompany" parameterType="companyVO">
+		<selectKey keyProperty="coNo" resultType="String" order="BEFORE">
+			select 'CMSEQ' || LPAD(seq_company.nextval, 5, '0') from dual
+        </selectKey>
+        
+		INSERT INTO COMPANY(
+			CO_NO, CO_NAME, CO_CONTENT, CO_JOB_TYPE, CO_URL, CO_EMPLOYEE_COUNT, CO_SALES,
+			CO_FNDN_YMD, CO_FAX, CO_CEO_NAME, POSTCODE, ADDRESS_BASIC, ADDRESS_DETAIL,
+			CO_LOGO_PATH, CO_STAT_CODE, REQUEST_FILE, JOIN_YMD
+		)
+		VALUES(
+			#{coNo}, #{coName}, #{coContent}, #{coJobType}, #{coUrl}, #{coEmployeeCount}, #{coSales},
+			#{coFndnYmd}, #{coFax}, #{coCeoName}, #{postcode}, #{addressBasic}, #{addressDetail},
+			#{coLogoPath}, #{coStatCode}, #{requestFile}, TO_CHAR(SYSDATE, 'yyyyMMdd')
+		)
+	</insert>
+	
+	<update id="editCompany" parameterType="companyVO">
+		UPDATE COMPANY
+		SET
+			CO_NAME = #{coName},
+			CO_JOB_TYPE = #{coJobType},
+			CO_URL = #{coUrl},
+			CO_EMPLOYEE_COUNT = #{coEmployeeCount},
+			CO_SALES = #{coSales},
+			CO_CEO_NAME = #{coCeoName},
+			CO_FNDN_YMD = #{coFndnYmd},
+			CO_FAX = #{coFax},
+			POSTCODE = #{postcode},
+			ADDRESS_BASIC = #{addressBasic},
+			ADDRESS_DETAIL = #{addressDetail}
+		WHERE
+			CO_NO = #{coNo}
+	</update>
+	
+	<insert id="recruitWrite" parameterType="recruitVO">
+		INSERT INTO RECRUIT_ANNOUNCEMENT(
+			RECRUIT_NO, CO_MEM_ID, TITLE, CONTENT, REQUIRED_EDUCATION, REQUIRED_QUALIFICATION, 
+			RECRUIT_JOB, RECRUIT_BGNG_YMD, RECRUIT_BGNG_DT, RECRUIT_DDLN_YMD, RECRUIT_DDLN_DT, 
+			WORK_TIME, WORK_TYPE, SALARY, CO_POSTCODE, CO_ADDRESS_BASIC, CO_ADDRESS_DETAIL, 
+			RECRUIT_COUNT, RECRUIT_REG_YMD, HIT, 
+			<if test="attachFile != null and attachFile != ''"> ATTACH_FILE, </if>
+			ALL_RECRUIT_YN, SELF_RSM_YN, RECRUIT_STAT_CODE
+		)
+		VALUES(
+			seq_rec.nextval, #{coMemId}, #{title}, #{content}, #{requiredEducation}, #{requiredQualification},
+			#{recruitJob}, #{recruitBgngYmd}, #{recruitBgngDt}, #{recruitDdlnYmd}, #{recruitDdlnDt},
+			#{workTime}, #{workType}, #{salary}, #{coPostcode}, #{coAddressBasic}, #{coAddressDetail},
+			#{recruitCount}, TO_CHAR(SYSDATE, 'yyyyMMdd'), '0',
+			<if test="attachFile != null and attachFile != ''"> #{attachFile}, </if>
+			#{allRecruitYn}, #{selfRsmYn}, 'RECSTAT001'
+		)
+	</insert>
+	
+	<select id="getRecList" parameterType="String" resultType="recruitVO">
+		select RECRUIT_NO, RA.CO_MEM_ID, CM.CO_NO, TITLE
+		     , RECRUIT_BGNG_YMD, RECRUIT_BGNG_DT, RECRUIT_DDLN_YMD, RECRUIT_DDLN_DT, RECRUIT_COUNT
+		     , RECRUIT_REG_YMD, HIT, ALL_RECRUIT_YN, SELF_RSM_YN, RECRUIT_STAT_CODE
+		FROM RECRUIT_ANNOUNCEMENT RA, CO_MEMBER CM
+		WHERE 1 = 1
+		AND RA.CO_MEM_ID = CM.MEM_ID
+		AND CM.CO_NO = #{coNo}
+		AND RECRUIT_STAT_CODE = 'RECSTAT001'
+	</select>
+	
+	<select id="getRecruitDetail" parameterType="int" resultType="recruitVO">
+		select RECRUIT_NO, RA.CO_MEM_ID, CM.CO_NO, TITLE, CONTENT, REQUIRED_EDUCATION, REQUIRED_QUALIFICATION
+			 , RECRUIT_JOB, RECRUIT_BGNG_YMD, RECRUIT_BGNG_DT, RECRUIT_DDLN_YMD, RECRUIT_DDLN_DT
+			 , WORK_TIME, WORK_TYPE, SALARY, CO_POSTCODE, CO_ADDRESS_BASIC, CO_ADDRESS_DETAIL
+			 , RECRUIT_COUNT, RECRUIT_REG_YMD, HIT, ATTACH_FILE, ALL_RECRUIT_YN, SELF_RSM_YN, RECRUIT_STAT_CODE
+		  FROM RECRUIT_ANNOUNCEMENT RA, CO_MEMBER CM
+	     WHERE 1 = 1
+	       AND RA.CO_MEM_ID = CM.MEM_ID
+		   AND RECRUIT_NO = #{recruitNo}
+	</select>
+	
+	<select id="getLogoPath" parameterType="String" resultType="String">
+		SELECT CO_LOGO_PATH
+		FROM COMPANY
+		WHERE CO_NO = #{coNo}
+	</select>
+	
+	<update id="recruitEdit" parameterType="recruitVO">
+		UPDATE RECRUIT_ANNOUNCEMENT
+		SET
+			TITLE = #{title},
+			CONTENT = #{content},
+			REQUIRED_EDUCATION = #{requiredEducation},
+			REQUIRED_QUALIFICATION = #{requiredQualification},
+			RECRUIT_JOB = #{recruitJob},
+			RECRUIT_BGNG_YMD = #{recruitBgngYmd},
+			RECRUIT_BGNG_DT = #{recruitBgngDt},
+			RECRUIT_DDLN_YMD = #{recruitDdlnYmd},
+			RECRUIT_DDLN_DT = #{recruitDdlnDt},
+			WORK_TIME = #{workTime},
+			WORK_TYPE = #{workType},
+			SALARY = #{salary},
+			CO_POSTCODE = #{coPostcode},
+			CO_ADDRESS_BASIC = #{coAddressBasic},
+			CO_ADDRESS_DETAIL = #{coAddressDetail},
+			RECRUIT_COUNT = #{recruitCount},
+			ATTACH_FILE = #{attachFile},
+			ALL_RECRUIT_YN = #{allRecruitYn},
+			SELF_RSM_YN = #{selfRsmYn}
+		WHERE 1 = 1
+		AND RECRUIT_NO = #{recruitNo}
+	</update>
+	
+	<update id="recruitDelete" parameterType="int">
+		UPDATE RECRUIT_ANNOUNCEMENT
+		   SET RECRUIT_STAT_CODE = 'RECSTAT000'
+		 WHERE RECRUIT_NO = #{recruitNo}
+	</update>
+	
+	<select id="getCompany" parameterType="String" resultType="companyVO">
+		SELECT CO_NO, CO_NAME, CO_CONTENT, CO_JOB_TYPE
+			 , (select b.common_code_name from common_code b where a.CO_JOB_TYPE = b.common_code) CO_JOB_TYPE_NAME
+			 , CO_URL, CO_EMPLOYEE_COUNT, CO_SALES, CO_FNDN_YMD, CO_FAX
+			 , CO_CEO_NAME, POSTCODE, ADDRESS_BASIC, ADDRESS_DETAIL, CO_LOGO_PATH, CO_STAT_CODE, REQUEST_FILE, JOIN_YMD
+		  FROM COMPANY a
+		 WHERE CO_NO = #{coNo}
+	</select>
+	
+	<resultMap type="companyVO" id="companyMap">
+		<id property="coNo" column="co_no"/>
+		<result property="coNo" column="co_no"/>
+		<result property="coName" column="co_name"/>
+		<result property="coContent" column="co_content"/>
+		<result property="coJobType" column="co_job_type"/>
+		<result property="coUrl" column="co_url"/>
+		<result property="coEmployeeCount" column="co_employee_count"/>
+		<result property="coSales" column="co_sales"/>
+		<result property="coFndnYmd" column="co_fndn_ymd"/>
+		<result property="coFax" column="co_fax"/>
+		<result property="coCeoName" column="co_ceo_name"/>
+		<result property="postcode" column="postcode"/>
+		<result property="addressBasic" column="address_basic"/>
+		<result property="addressDetail" column="address_detail"/>
+		<result property="coLogoPath" column="co_logo_path"/>
+		<result property="coStatCode" column="co_stat_code"/>
+		<result property="requestFile" column="request_file"/>
+		<result property="joinYmd" column="join_ymd"/>
+		<result property="coJobTypeName" column="co_job_type_name"/>
+		<collection property="comReviewList" resultMap="comReviewMap"/>
+	</resultMap>
+	
+	<resultMap type="comReviewVO" id="comReviewMap">
+		<result property="reviewNo" column="review_no"/>
+		<result property="memId" column="mem_id"/>
+		<result property="coNo" column="co_no"/>
+		<result property="title" column="title"/>
+		<result property="oneLineReview" column="one_line_review"/>
+		<result property="wrtDt" column="wrt_dt"/>
+		<result property="workYn" column="work_yn"/>
+		<result property="coLocation" column="co_location"/>
+		<result property="coWelfareEvl" column="co_welfare_evl"/>
+		<result property="coSalaryEvl" column="co_salary_evl"/>
+		<result property="coCultureEvl" column="co_culture_evl"/>
+		<result property="coImproveEvl" column="co_improve_evl"/>
+		<result property="coManageEvl" column="co_manage_evl"/>
+		<result property="coStrengths" column="co_strengths"/>
+		<result property="coWeaknesses" column="co_weaknesses"/>
+		<result property="coWish" column="co_wish"/>
+		<result property="hit" column="hit"/>
+	</resultMap>
+	
+	<select id="getCompanyDetail" parameterType="String" resultMap="companyMap">
+		SELECT 
+			a.CO_NO 
+			,a.CO_NAME 
+			,a.CO_CONTENT 
+			,a.CO_JOB_TYPE 
+			,(select b.common_code_name from common_code b where a.CO_JOB_TYPE = b.common_code) CO_JOB_TYPE_NAME
+			,a.CO_URL 
+			,a.CO_EMPLOYEE_COUNT 
+			,a.CO_SALES 
+			,a.CO_FNDN_YMD 
+			,a.CO_FAX 
+			,a.CO_CEO_NAME 
+			,a.POSTCODE 
+			,a.ADDRESS_BASIC 
+			,a.ADDRESS_DETAIL 
+			,a.CO_LOGO_PATH 
+			,a.CO_STAT_CODE 
+			,a.REQUEST_FILE 
+			,a.JOIN_YMD 
+			,b.REVIEW_NO 
+			,b.MEM_ID 
+			,b.CO_NO 
+			,b.TITLE 
+			,b.ONE_LINE_REVIEW 
+			,b.WRT_DT 
+			,b.WORK_YN 
+			,b.CO_WELFARE_EVL 
+			,b.CO_SALARY_EVL 
+			,b.CO_CULTURE_EVL 
+			,b.CO_IMPROVE_EVL 
+			,b.CO_MANAGE_EVL 
+			,b.CO_STRENGTHS 
+			,b.CO_WEAKNESSES 
+			,b.CO_WISH 
+			,b.HIT
+		from company a left outer join BOARD_CO_REVIEW b on a.co_no = b.co_no
+		where a.co_no = #{comNo}
+	</select>
+	
+	<select id="getCompanyList" parameterType="String" resultType="companyVO">
+		SELECT CO_NAME, CO_NO
+		  FROM COMPANY
+		 WHERE 1 = 1
+		<if test="comName != null">
+			and co_name like '%'||#{comName}||'%'
+		</if> 
+	</select>
+	
+	<select id="getWaitCompanyCount" resultType="int">
+		SELECT COUNT(CO_NO)
+		  FROM COMPANY
+		 WHERE CO_STAT_CODE = 'COMSTAT000'
+	</select>
+	
+	<select id="getWaitCompanyList" parameterType="pagingVO" resultType="companyVO">
+		<include refid="pageHeader"/>
+		SELECT CO_NO, CO_NAME, CO_CONTENT, CO_JOB_TYPE, CO_URL, CO_EMPLOYEE_COUNT, CO_SALES, CO_FNDN_YMD, CO_FAX
+			 , CO_CEO_NAME, POSTCODE, ADDRESS_BASIC, ADDRESS_DETAIL, CO_LOGO_PATH, CO_STAT_CODE, REQUEST_FILE, JOIN_YMD
+		  FROM COMPANY
+		 WHERE CO_STAT_CODE = 'COMSTAT000'
+		<include refid="pageFooter"/>
+	</select>
+	
+	<select id="getRecogCompanyCount" resultType="int">
+		SELECT COUNT(CO_NO)
+		  FROM COMPANY
+		 WHERE CO_STAT_CODE != 'COMSTAT000'
+		   AND CO_STAT_CODE != 'COMSTAT003'
+	</select>
+	
+	<select id="getRecogCompanyList" parameterType="pagingVO" resultType="companyVO">
+		<include refid="pageHeader"/>
+		SELECT CO_NO, CO_NAME, CO_CONTENT, CO_JOB_TYPE, CO_URL, CO_EMPLOYEE_COUNT, CO_SALES, CO_FNDN_YMD, CO_FAX
+			 , CO_CEO_NAME, POSTCODE, ADDRESS_BASIC, ADDRESS_DETAIL, CO_LOGO_PATH, CO_STAT_CODE, REQUEST_FILE, JOIN_YMD
+		  FROM COMPANY
+		 WHERE CO_STAT_CODE != 'COMSTAT000'
+		   AND CO_STAT_CODE != 'COMSTAT003'
+		 ORDER BY CO_NAME
+		<include refid="pageFooter"/>
+	</select>
+	
+	<update id="cancelCompany" parameterType="String">
+		UPDATE COMPANY
+		   SET CO_STAT_CODE = 'COMSTAT003'
+		 WHERE CO_NO = #{coNo}
+	</update>
+	
+	<update id="signUpCompany" parameterType="String">
+		UPDATE COMPANY
+		   SET CO_STAT_CODE = 'COMSTAT001'
+		 WHERE CO_NO = #{coNo}
+	</update>
+	
+	<select id="checkAlert" parameterType="int" resultType="String">
+		SELECT CO_NO
+		  FROM BOARD_CO_REVIEW
+		 WHERE REVIEW_NO = #{reviewNo}
+	</select>
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

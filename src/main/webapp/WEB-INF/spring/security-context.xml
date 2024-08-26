@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- 사용자 정의 접근 거부 처리자 -->
+	<bean id="customAccessDenied" class="kr.or.ddit.security.CustomAccessDeniedHandler" />
+	
+	<!-- 로그인 성공 처리자 -->
+	<bean id="customLoginSuccess" class="kr.or.ddit.security.CustomLoginSuccessHandler" />
+	
+	<!-- 사용자 테이블을 이용한 인증 / 인가 처리 : 비밀번호 암호화 처리기 -->
+	<bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+	
+	<!-- UserDetailsService 재정의 -->
+	<bean id="customUserDetailsService" class="kr.or.ddit.security.CustomUserDetailsService"/>
+<!-- 	<bean id="customCompanyUserDetailsService" class="kr.or.ddit.security.CustomCompanyUserDetailsService"/> -->
+
+	<security:http>
+		<!-- URI 패턴으로 접근 제한을 설정 // 사용하지 않음 @ 어노테이션으로 처리 예정 -->
+<!-- 		<security:intercept-url pattern="/jobel/*" access="permitAll"/> -->
+<!-- 		<security:intercept-url pattern="/jobel/co_*" access="hasRole('ROLE_COMPANY')"/> -->
+		
+		<!-- 폼 기반 인증 기능 사용 -->
+<!-- 		<security:form-login login-page="/jobel/login"/> -->
+		
+		<!-- 로그인 성공 처리자 -->
+		<security:form-login login-page="/jobel/login" authentication-success-handler-ref="customLoginSuccess"/>
+		
+		<!-- 로그아웃 처리를 위한 URI를 지정, 로그아웃 이후 세션 무효화 -->
+		<security:logout logout-url="/jobel/logout" invalidate-session="true" delete-cookies="JSESSION_ID"/>
+		
+		<!-- 사용자의 정의 접근 거부 처리자 [ref : reference(참조하다)] -->
+		<security:access-denied-handler ref="customAccessDenied"/>
+		
+		<!-- 접근 거부 처리자의 URI를 지정 -->
+<!-- 		<security:access-denied-handler error-page="/accessError"/> -->
+	</security:http>
+	
+	<security:authentication-manager>
+		<security:authentication-provider user-service-ref="customUserDetailsService">
+			<security:password-encoder ref="bcryptPasswordEncoder"/>
+		</security:authentication-provider>
+<!-- 		<security:authentication-provider user-service-ref="customCompanyUserDetailsService"> -->
+<!-- 			<security:password-encoder ref="bcryptPasswordEncoder"/> -->
+<!-- 		</security:authentication-provider> -->
+	</security:authentication-manager>
+</beans>
+
+
+

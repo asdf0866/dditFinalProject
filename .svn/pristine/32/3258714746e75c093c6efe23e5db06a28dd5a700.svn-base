@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IUserServiceMapper">
+
+	<sql id="companySearch">
+		<if test="searchWord != ''">
+			and (co_name like '%' || #{searchWord} || '%')
+		</if>
+	</sql>
+	
+	<sql id="companyOrder">
+		<if test="orderType != null and orderType != ''">
+			<if test="orderType == 'sale'">
+				order by a.co_sales desc 
+			</if>
+			<if test="orderType == 'empNum'">
+				order by a.CO_EMPLOYEE_COUNT desc 
+			</if>
+			<if test="orderType == 'coName1'">
+				order by a.CO_NAME asc 
+			</if>
+			<if test="orderType == 'coName2'">
+				order by a.CO_NAME desc
+			</if>
+			<if test="orderType == 'welfare'">
+				order by (Case When CO_WELFARE_EVL_avg Is Null Then 0 WHEN CO_WELFARE_EVL_avg = '' THEN 1 Else 2 End) desc, CO_WELFARE_EVL_avg desc
+			</if>
+			<if test="orderType == 'salary'">
+				order by (Case When CO_SALARY_EVL_avg Is Null Then 0 WHEN CO_SALARY_EVL_avg = '' THEN 1 Else 2 End) desc, CO_SALARY_EVL_avg desc
+			</if>
+			<if test="orderType == 'culture'">
+				order by (Case When CO_CULTURE_EVL_avg Is Null Then 0 WHEN CO_CULTURE_EVL_avg = '' THEN 1 Else 2 End) desc, CO_CULTURE_EVL_avg desc
+			</if>
+			<if test="orderType == 'improve'">
+				order by (Case When CO_IMPROVE_EVL_avg Is Null Then 0 WHEN CO_IMPROVE_EVL_avg = '' THEN 1 Else 2 End) desc, CO_IMPROVE_EVL_avg desc
+			</if>
+			<if test="orderType == 'manage'">
+				order by (Case When CO_MANAGE_EVL_avg Is Null Then 0 WHEN CO_MANAGE_EVL_avg = '' THEN 1 Else 2 End) desc, CO_MANAGE_EVL_avg desc
+			</if>
+			<if test="orderType == 'total'">
+				order by (Case When CO_EVL_avg Is Null Then 0 WHEN CO_EVL_avg = '' THEN 1 Else 2 End) desc, CO_EVL_avg desc
+			</if>
+		</if>
+		<if test="orderType == null or orderType == ''">
+			order by a.CO_NO desc
+		</if>
+	</sql>
+
+	<!-- 
+	PaginationInfoVO(totalRecord=0, totalPage=0, currentPage=1, screenSize=10
+	, blockSize=5, startRow=1, endRow=10, startPage=1, endPage=5, dataList=null
+	, searchType=null, searchWord=null)
+	 -->
+	<select id="selectCompanyRankCount" parameterType="pagingVo" resultType="int">
+		select 
+			count(distinct(a.co_no))
+		from company a
+		where a.co_no like 'CMSEQ'||'%'
+		<include refid = "companySearch" />
+	</select>
+	
+	<select id="selectCompanyRankList" parameterType="pagingVo" resultType="companyVO">
+		select
+			b.*
+		from(
+			select
+				a.*, row_number() over (<include refid="companyOrder" />) rnum
+			from(
+				select
+					a.CO_NO
+					,a.CO_NAME
+					,a.CO_JOB_TYPE
+					,(select c.common_code_name from common_code c where a.CO_JOB_TYPE = c.common_code) CO_JOB_TYPE_NAME
+					,a.CO_URL
+					,a.CO_EMPLOYEE_COUNT
+					,a.CO_SALES
+					,a.CO_FNDN_YMD
+					,a.CO_FAX
+					,a.CO_CEO_NAME
+					,a.POSTCODE
+					,a.ADDRESS_BASIC
+					,a.ADDRESS_DETAIL
+					,a.CO_LOGO_PATH
+					,a.CO_STAT_CODE
+					,a.REQUEST_FILE
+					,a.JOIN_YMD
+                    ,NVL(ROUND(avg(b.CO_WELFARE_EVL), 1), 0) as CO_WELFARE_EVL_avg
+                    ,NVL(ROUND(avg(b.CO_SALARY_EVL), 1), 0)  as CO_SALARY_EVL_avg
+                    ,NVL(ROUND(avg(b.CO_CULTURE_EVL), 1), 0)  as CO_CULTURE_EVL_avg
+                    ,NVL(ROUND(avg(b.CO_IMPROVE_EVL), 1), 0)  as CO_IMPROVE_EVL_avg
+                    ,NVL(ROUND(avg(b.CO_MANAGE_EVL), 1), 0)  as CO_MANAGE_EVL_avg
+                    ,NVL(ROUND(avg(b.CO_WELFARE_EVL+b.CO_SALARY_EVL+b.CO_CULTURE_EVL+b.CO_IMPROVE_EVL+b.CO_MANAGE_EVL), 1), 0)  as CO_EVL_avg
+				from company a
+                    left outer join board_co_review b on a.co_no = b.co_no
+				where a.co_no like 'CMSEQ'||'%'
+                group by (a.CO_NO
+					,a.CO_NAME
+					,a.CO_JOB_TYPE
+					,a.CO_URL
+					,a.CO_EMPLOYEE_COUNT
+					,a.CO_SALES
+					,a.CO_FNDN_YMD
+					,a.CO_FAX
+					,a.CO_CEO_NAME
+					,a.POSTCODE
+					,a.ADDRESS_BASIC
+					,a.ADDRESS_DETAIL
+					,a.CO_LOGO_PATH
+					,a.CO_STAT_CODE
+					,a.REQUEST_FILE
+					,a.JOIN_YMD)
+				<include refid="companySearch" />
+				<include refid="companyOrder" />
+			) a
+		) b
+		<![CDATA[
+			where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</select>
+	
+	<select id="getCompanyDetailByCoNo" parameterType="String" resultType="companyVO">
+		select 
+			CO_NO
+			,CO_NAME
+			,CO_CONTENT
+			,CO_JOB_TYPE
+			,(select common_code_name
+				from common_code
+			   where common_code = CO_JOB_TYPE) co_job_type_name
+			,CO_URL
+			,CO_EMPLOYEE_COUNT
+			,CO_SALES
+			,CO_FNDN_YMD
+			,CO_FAX
+			,CO_CEO_NAME
+			,POSTCODE
+			,ADDRESS_BASIC
+			,ADDRESS_DETAIL
+			,CO_LOGO_PATH
+			,CO_STAT_CODE
+			,REQUEST_FILE
+			,JOIN_YMD
+		from company
+		where co_no = #{coNo}
+	</select>
+	
+	<select id="getLikeCompanyByMemId" resultType="int" parameterType="intCompanyVO">
+		select 
+			count(*)
+		from INTEREST_COMPANY
+		where mem_id = #{memId}
+		and co_no = #{coNo}
+	</select>
+	
+	<select id="getReportId" parameterType="int" resultType="String">
+		SELECT MEM_ID
+		  FROM BOARD_CO_REVIEW
+		 WHERE REVIEW_NO = #{reviewNo}
+	</select>
+	
+	<insert id="reportReview" parameterType="reportVO">
+		INSERT INTO REPORT(
+			REPORT_NO, REPORT_ID, REPORT_DT, REPORT_REASON, REPORTER_ID, REVIEW_NO, REPORT_STAT_CODE
+		)
+		VALUES (
+			seq_report.nextval, #{reportId}, SYSDATE, #{reportReason}, #{reporterId}, #{reviewNo}, 'ALESTAT001'
+		)
+	</insert>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

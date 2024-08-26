@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IReportMapper">
+
+	<sql id="pageHeader">
+   		select b.*
+		  from (
+		  	select a.*, ROWNUM as rnum
+		  	  from (
+	</sql>
+	
+	<sql id="pageFooter">
+				) a
+			) b
+		<![CDATA[
+		WHERE b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</sql>
+
+	<select id="getReportCount" resultType="int">
+		SELECT COUNT(REPORT_NO)
+		  FROM REPORT
+	</select>
+	
+	<select id="getReportList" parameterType="pagingVO" resultType="reportVO">
+		<include refid="pageHeader"/>
+		SELECT REPORT_NO, REPORT_ID, REPORT_DT, REPORT_REASON, REPORTER_ID, REVIEW_NO, REPORT_STAT_CODE
+		  FROM REPORT
+		 ORDER BY REPORT_NO
+		<include refid="pageFooter"/>
+	</select>
+</mapper>

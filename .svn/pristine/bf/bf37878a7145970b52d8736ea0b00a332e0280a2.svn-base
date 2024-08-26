@@ -1,0 +1,384 @@
+
+	@font-face {
+		font-family: 'LINESeedKR-Bd';
+	    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2') format('woff2');
+	    font-weight: 700;
+	    font-style: normal;
+	}
+	
+	@font-face {
+		font-family: 'GangwonEdu_OTFBoldA';
+		src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff') format('woff');
+		font-weight: normal;
+		font-style: normal;
+	}
+		
+	body {
+		background: #f9fbfc;
+		display: flex;
+	}
+	
+	body * {
+		font-family: 'GangwonEdu_OTFBoldA';
+	}
+	
+	@media(min-width:1200px){
+		.myPage {
+			width : 1200px;
+			margin : 0 auto;
+		}
+	}
+	
+ 	@media(min-width: 1024px) {
+     	.myPage::after {
+ 			content: "";
+ 			position: absolute;
+ 			top: 0;
+ 			left: -75%;
+ 			right: 0;
+ 			height: 100%;
+ 			width: 75%;
+ 			background-color: #fff;
+		}
+	}
+	
+	.wrap {
+		position : relative;
+	}
+	
+	.myPage, .container {
+		display : flex;
+		vertical-align : top;
+	}
+	
+	.header {
+		position : relative;
+		display : table-cell;
+		width : 350px;
+		background-color : #fff;
+		box-shadow : 5px 1px 8px 0 rgba(0, 0, 0, .06);
+		border-left : 1px solid rgba(0, 0, 0, .08);
+		vertical-align : top;
+		z-index : 1;
+	}
+	
+	.gnb_area {
+		padding : 10px 25px;
+		text-align : center;
+	}
+	
+	.myPageLogo {
+		width : 150px;
+	}
+	
+	.profile_area {
+		display : block;
+		text-align : center;
+		margin : 15px auto;
+	}
+	
+	.profile_area, .profile_thumbnail  {
+		width : 100%;
+	}
+	
+	.profile_area .profile_thumbnail .photoLink {
+		position: relative;
+		display: inline-block;
+		text-decoration: none;
+		cursor: pointer;
+		color : white;
+	}
+	
+	.profile_area .profile_thumbnail .photoLink .photoEdit {
+		position: absolute;
+		right: -10px;
+		bottom: 0;
+		width: 30px;
+		height: 30px;
+		border-radius: 50%;
+		border: 2px solid #fff;
+		background-color: #02da78;
+		box-shadow: 2px 6px 8px 0 rgba(30, 30, 35, .08);
+		box-sizing: border-box;
+	}
+	.profile_area .profile_thumbnail .photoLink .photoEdit > i {
+		vertical-align: middle;
+		text-align: center;
+		font-size: large;
+	}
+	
+	.photoLink > .profilePhoto {
+		width : 200px;
+		height : 200px;
+	}
+
+	.profile>p {
+		margin : 0px;
+	}
+		
+	.userNickname {
+		font-weight : 700;
+		font-size : 28px;
+	}
+	
+	.userId {
+		font-weight: 300;
+		font-size : 20px;
+		color : #373535;
+	}
+	
+	.userEmail {
+		font-weight: normal;
+		font-size: 14px;
+		color: gray;
+	}
+
+	.left_menu, .left_sub_menu, .left_guide {
+		list-style : none;
+		text-align : center;
+	}
+	
+	.selected {
+		font-weight : 700;
+		font-size : 1.2em;
+		text-decoration: underline 2px;
+		text-underline-position : under;
+	}
+	
+	.footer_item {
+		display : inline-block;
+	}
+	
+	.left_guide {
+		padding: 0px;
+	}
+	
+	.left_menu_title {
+		font-weight: 700;
+		font-size : 1.5em;
+	}
+	/* CONTENT 영역 CSS */
+	.content {
+		padding-left : 60px;
+		padding-right : 30px;
+		box-sizing : border-box;
+	}
+	
+	.header_top {
+		padding : 25px 0;
+		text-align : right;
+		width : 100%;
+	}
+	
+	.content_item {
+		background: #fff;
+		border-radius: 10px;
+		width : 100%;
+	}
+	
+	.content_item_title {
+/* 		background-color : linear-gradient(90deg, green, blue); */
+		position: relative;
+		display: block;
+		padding: 12px 38px 12px 18px;
+		border-radius: 10px 10px 0 0;
+		background-image: linear-gradient(98deg, #03c75a, #49c6dd);
+		text-decoration: none;
+	}
+	
+	.item_title {
+		color : white;
+		font-weight : 700;
+	}
+	
+	.content_item_row {
+    	border-top : 0;
+	    border-radius : 0 0 10px 10px;
+		padding : 0 15px;
+		box-shadow : 1px 1px 10px 0 rgba(72, 75, 108, .08);
+		border : solid 1px #e3e9ed;
+		background-color : #fff;
+		box-sizing : border-box;
+		list-style: none;
+	}
+	
+	.content_item_row > li{
+		position: relative;
+		padding: 15px 0 15px 30px;
+	}
+	
+	.content_item_row li+li {
+		border-top: 1px solid rgba(220, 227, 233, .8);
+	}
+	
+	.content_item_row > li > i {
+		font-size : 18px;
+	}
+	
+	.item_text {
+ 		font-size : 18px;
+	}
+	
+	.content_item_btn {
+    	padding : 4px 12px;
+    	font-size : 12px;
+		text-decoration : none;
+    	color : white;
+		float : right;
+ 		background: linear-gradient(to bottom, rgba(102, 152, 203, 1) 0%, rgba(92, 138, 184, 1) 100%);
+		display: inline-block;
+		position: relative;
+    	
+		border: 1px solid rgba(0, 0, 0, 0.21);
+		border-bottom: 4px solid rgba(0, 0, 0, 0.21);
+		border-radius: 4px;
+		text-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+	}
+	
+	/******************************/
+	/***** MENU CLICK 후 영역 *****/
+	/******************************/
+	.subContent {
+		position: relative;
+		padding: 16px 17px 0;
+		border-radius: 12px;
+		box-shadow: 2px 2px 14px 0 rgba(0, 164, 73, .08);
+		border: solid 1px rgba(3, 213, 128, .8);
+		background-color: #fff;
+		box-sizing: border-box;
+	}
+	
+	.subContent+ .subContent {
+		margin-top : 25px;
+	}
+	
+	.infoTitle {
+		position: relative;
+		margin-bottom: 10px;
+	}
+	
+	.titleText {
+		display: inline-block;
+		font-size: 16px;
+		font-weight: 700;
+		line-height: 17px;
+		letter-spacing: -.4px;
+		color: #96a1aa;
+	}
+	
+	.myProfile ul {
+		list-style : none;
+	}
+	
+	.infoContent {
+		position : relative;
+		display: table;
+		table-layout: fixed;
+		width: 100%;
+		padding: 12px 0;
+		margin-bottom: 0;
+		border-top : 1px solid #cccccc;
+	}
+	
+	.infoContent:last-child {
+		border-bottom : 1px solid #cccccc;
+		margin-bottom : 10px;
+	}
+	
+	.infoContent li {
+		display: table-cell;
+		vertical-align: middle;
+	}
+	
+	.infoContent li:nth-child(1){
+		width : 70px;
+		text-align: left;
+	}
+	
+	.infoContent .myPhoto > img {
+		width : 55px;
+		height : 55px;
+		border-radius: 50%;
+		vertical-align: top;
+		box-shadow: 0 3px 6px 0 rgba(29, 34, 53, .08);
+	}
+	
+	.myAccount {
+		display : block;
+	}
+	
+	.infoContent .myAccount .myName .nameText {
+		font-size: 24px;
+		font-weight: 700;
+		line-height: 29px;
+		letter-spacing: -.63px;
+		color: #1e1e23;
+		word-break: break-all;
+	}
+	
+	.infoContent .myAccount .myEmail {
+		font-size: 14px;
+		font-weight: 300;
+		line-height: 16px;
+		letter-spacing: normal;
+		color: rgba(123, 137, 148, .8);
+		word-break: break-all;
+	}
+		
+	.myName .edit_btn {
+		position: absolute;
+		top : 5px;
+		right: 0px;
+	}
+	
+	.infoContent+ .subContentRow {
+		border-top: 1px solid rgba(220, 227, 233, .8);
+	}
+	
+	.subContentRow {
+		padding-left: 0;
+	}
+	
+	.subContentRow .rowItem {
+		padding: 15px 0 17px 30px;
+	}
+	
+	.subContentRow li+li {
+		border-top: 1px solid rgba(220, 227, 233, .8);
+	}
+	
+	.rowItem {
+		padding: 10px 0 10px 30px;
+		font-size : 16px;
+	}
+	
+	.rowItem .rowItemText {
+		font-weight: 300;
+		line-height: 24px;
+		letter-spacing: -.8px;
+		color: #303038;
+		word-break: break-all;
+	}
+	
+	#editPwFrm .passwordBtn {
+		margin-bottom: 30px;
+	}
+	
+	.recWriteBtn {
+		position: absolute;
+		top : 10px;
+		right: 15px;
+	}
+	
+	.infoContentHeader > li {
+		font-weight : 700;
+	}
+	
+	.pagingFooter {
+		width: 100%;
+		border-top : 1px solid #cccccc;
+		margin-bottom: 5px;
+		padding-top: 5px;
+		display: flex;
+		justify-content: flex-end;
+	}

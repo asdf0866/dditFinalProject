@@ -1,0 +1,401 @@
+ul {
+	list-style: none;
+}
+
+p {
+	margin : 0;
+}
+
+.reviewSection {
+	display: table;
+	overflow: hidden;
+	position: relative;
+	z-index: 1;
+	width : 100%;
+	height : 100%;
+	box-sizing: border-box;
+}
+
+.reviewSection * {
+	font-family: "Noto Sans KR", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 250;
+	font-style: normal;
+}
+	
+.reviewWrap {
+	display : table-row;
+	width : 100%;
+	height : 100%;
+	background-color : #cccccc;
+}
+
+.reviewContent {
+	min-height : 960px;
+	width : 90%;
+	background-color: #ffffff;
+	border-radius: 10px;
+	margin : 50px auto;
+	padding : 0 15px;
+}
+	
+.reviewTitle {
+	position : relative;
+}
+.reviewTitleText {
+	margin : 15px 15px 15px 45px;
+	display : inline-block;
+	font-size : 1.5rem;
+	font-weight: 800;
+}
+
+.reviewFavorite {
+	display: flex;
+	width: 100%;
+	justify-content: space-around;
+}
+
+.favCard {
+	width: 30%;
+}
+
+.favSpan {
+	display: inline-block;
+	width: 100px;
+	font-weight: 400;
+}
+
+.reviewBoard {
+	position: relative;
+}
+.boardHeader {
+	width: 100%;
+	min-height: 50px;
+}
+
+.boardHeaderText {
+	margin : 15px 15px 15px 45px;
+	display : inline-block;
+	font-size : 1.2rem;
+	font-weight: 800;
+}
+
+.boardBody {
+	position : relative;
+	width: 100%;
+	padding : 0 2%;
+}
+
+.boardTitle {
+	position : relative;
+	width: 100%;
+	display : flex;
+	justify-content: space-between;
+	margin : 10px 0;
+}
+
+.boardTypes {
+	width: 72%;
+	display: flex;
+	justify-content: flex-end;
+}
+
+.boardTypes > select {
+	width: 10%;
+}
+
+#reviewSearchForm {
+	width: 25%;
+}
+
+.boardSearch {
+	width: 100%
+}
+
+.reviewBoardFooter {
+	display: flex;
+	justify-content: space-between;
+	margin : 15px 18px;
+	padding-bottom: 20px;
+}
+
+.companyCard {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+.companyCard+ .companyCard{
+	margin-top: 5px;
+}
+
+.companyCardImg {
+	border : 1px solid #cccccc;
+	max-width : 75px;
+	max-height: 75px;
+	margin : auto 0;
+}
+
+.comMainText {
+	font-size: 1.0rem;
+	font-weight: 600;
+}
+
+.comSubText {
+	font-weight: 400;
+}
+
+.likeComBtn {
+	border : 2px solid #2E9D50;
+	background: none;
+	color : #2E9D50;
+	aspect-ratio : 2/1;
+	padding : 0 10px;
+}
+
+.likeComBtnReverse {
+	border : 2px solid #2E9D50;
+	background : #2E9D50;
+	color : #ffffff;	
+	aspect-ratio : 2/1;
+	padding : 0 10px;
+}
+
+.companyCard-1 {
+	text-align: center;
+	width : 10%;
+}
+
+.companyCard-2 {
+	text-align: center;
+	width : 12%;
+}
+
+.companyCard-3 {
+	width : 20%;
+}
+
+.companyCard-6 {
+	width : 48%;
+}
+
+/***********************************************/
+/*************** 작성 폼 CSS *******************/
+/***********************************************/
+
+.reviewWriteContent {
+	width : 100%;
+	padding-left: 45px;
+	padding-right: 15px;
+}
+
+.reviewItem {
+	width : 100%;
+	display : flex;
+	align-items : center;
+	min-height : 50px;
+}
+
+.reviewBigItem {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	min-height: 100px;
+}
+
+.reviewItemTitle {
+	display : inline-block;
+	width : 25%;
+	font-size : 30px;
+	font-weight : 600;
+	text-align: center;
+}
+
+.reviewBigItem > .reviewItemTitle {
+	width: 20%;
+}
+
+.reviewTextarea {
+	width : 80%;
+	min-height : 75px;
+	font-size : 16px;
+	resize : none;
+	border : 1px solid #ccc;
+	margin : 25px;
+}
+
+.reviewItemInput {
+	width : 70%;
+	height: 50px;
+	border : 1px solid #ccc;
+	font-size: 16px;
+	border-radius: 5px;
+	outline: none;
+	transition : border-color 0.3s;
+}
+
+.reviewItemInput:focus {
+	border-color: #007bff;
+}
+
+.reviewWriteContent+ .reviewWriteContent {
+	margin-top : 25px;
+}
+
+.reviewScoreArea {
+	width: 100%;
+	display: flex;
+	justify-content: space-evenly;
+}
+
+.scoreItem {
+	width: 18%;
+	border : 1px solid #ccc;
+	border-radius: 5px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.scoreTitle {
+	width: 100%;
+	min-height : 30px;
+	background-color: #bbb;
+	font-size: 24px;
+	font-weight: 400;
+	text-align: center;
+}
+
+.starArea {
+	width: 100%;
+	padding : 5px;
+	display: flex;
+	align-items: center;
+	justify-content: space-evenly;
+	border: none;
+}
+
+.star {
+	width: 35px; 
+	height: 35px; 
+	display: inline-block; 
+	background: url('https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FE2bww%2FbtsviSSBz4Q%2F5UYnwSWgTlFt6CEFZ1L3Q0%2Fimg.png') no-repeat; 
+	background-size: 100%; 
+	box-sizing: border-box; 
+}
+
+.star.on {
+	width: 35px; 
+	height: 35px;
+	display: inline-block; 
+	background: url('https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fb2d6gV%2FbtsvbDoal87%2FXH5b17uLeEJcBP3RV3FyDk%2Fimg.png') no-repeat;
+	background-size: 100%; 
+	box-sizing: border-box; 
+}
+
+.reviewTextContent {
+	border : 1px solid #ccc;
+	background-color: #eee;
+	border-radius: 5px;
+	width : 100%;
+}
+
+.reviewFooter {
+	width: 100%;
+	display: flex;
+}
+
+.reviewFooterDesc {
+	width: 75%;
+	padding-left: 25px;
+}
+
+.reviewFooterDesc > p {
+	font-weight: 400;
+}
+
+.reviewFooterBtns {
+	padding : 5px;
+	width: 25%;
+	display : flex;
+	justify-content: flex-end;
+	align-items: center;
+}
+
+.reviewFooterBtns > button {
+	margin : 0 5px;
+}
+
+.companySearchForm {
+	display: flex;
+	flex-direction : column;
+	width: 100%;
+}
+
+.companySearchBar {
+	width: 100%;
+}
+
+.companySearchResultArea {
+	width : 100%;
+	min-height: 300px;
+	max-height: 480px;
+	overflow: auto;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+}
+
+.searchData {
+	width: 90%;
+	border : 1px solid #ccc;
+	border-radius: 5px;
+	height: 40px;
+	display : flex;
+	align-items : center;
+	justify-content : center;
+	margin : 5px 0;
+}
+
+.searchData > p {
+	margin : 0;
+	font-size: 16px;
+	font-weight: 400;
+}
+
+.reviewDivideItem {
+	width: 50%;
+	display: flex;
+	align-items: center;
+}
+
+.searchData:active {
+	filter : invert(100%);
+}
+
+.searchData:active > p {
+	color: white;
+}
+
+.reviewRadio {
+	font-size : 24px;
+	font-weight: 400;
+	margin: 0 10px;
+}
+
+.reviewRadio > [type="radio"] {
+	appearance: none;
+	border: max(1px, 0.1em) solid gray;
+	border-radius: 50%;
+	width: 1em;
+	height: 1em;
+	transition: border 0.3s ease-in-out;
+}
+
+.reviewRadio > [type="radio"]:checked {
+	border: 0.3em solid green;
+}
+
+.reviewRadio > span {
+	margin-left: 5px;
+}

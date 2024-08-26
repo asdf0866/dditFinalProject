@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IAnswerQnaMapper">
+	
+	<select id="selectAnswer" parameterType="String" resultType="answerQnaVO">
+		select
+			answer_no, board_no, CONTENT, writer, wrt_dt, board_stat_code
+		from board_answer
+		where board_no = #{boardNo}
+		order by wrt_dt asc
+	</select>
+	
+	<insert id="insertAnswer" parameterType="answerQnaVO">
+		insert into board_answer (
+			answer_no, board_no, writer, content, wrt_dt, board_stat_code
+		) values (
+			seq_ans.nextval, #{boardNo}, #{writer}, #{content}, sysdate, 'TEST000'
+		)
+	</insert>
+	
+	<update id="updateAnswer" parameterType="answerQnaVO">
+		update board_answer
+		set
+			content = #{content},
+			wrt_dt = sysdate
+		where answer_no = #{answerNo}
+	</update>
+	
+	<delete id="deleteAnswer" parameterType="int">
+		delete from board_answer
+		where answer_no = #{answerNo}
+	</delete>
+	
+	<delete id="deleteQnaAndAnswers" parameterType="String">
+		delete from board_answer
+		where board_no = #{boardNo}
+	</delete>
+	
+</mapper>

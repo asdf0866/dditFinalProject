@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IQNAMapper">
+	
+	<sql id="qnaSearch">
+		<if test="searchType != null and searchType == 'title'">
+			and (title like '%' || #{searchWord} || '%')
+		</if>
+		<if test="searchType != null and searchType == 'writer'">
+			and (writer like '%' || #{searchWord} || '%')
+		</if>
+		<if test="memId != null and memId != ''">
+			and writer = #{memId}
+		</if>
+	</sql>
+	
+	<insert id="insertQna" parameterType="qnaVO" useGeneratedKeys="true">
+		<selectKey order="BEFORE" keyProperty="boardNo" resultType="String"> 
+			select 'BOQNA' || LPAD(seq_qna.nextval, 5, '0') from dual
+		</selectKey>
+		insert into board(
+			board_no, writer, title, content, wrt_dt, board_stat_code, hit
+		)values(
+			#{boardNo}, #{writer}, #{title}, #{content}, sysdate, 'TEST000', 0
+		)
+	</insert>
+	
+	<update id="incrementByHit" parameterType="String">
+		update board
+		set
+			hit = hit + 1
+		where board_no = #{boardNo}
+	</update>
+	
+	<select id="selectQna" parameterType="String" resultType="qnaVO">
+		select
+			board_no, title, content, writer, wrt_dt, hit
+		from board
+		where board_no = #{boardNo}
+	</select>
+	
+	<select id="selectQnaCount" parameterType="pagingVO" resultType = "int">
+		select count(board_no)
+		from board
+		where 1=1
+		and board_no like 'BOQNA'||'%'
+		<include refid="qnaSearch"/>
+	</select>
+	
+	<select id="selectQnaList" parameterType="pagingVO" resultType = "qnaVO">
+		select
+ 		  b.*
+ 		from (
+	 	  select 
+	 	  	a.*, row_number() over (order by a.board_no desc) rnum
+	 	  from(
+	 		select
+				board_no, title, content, writer, wrt_dt, hit
+			from board
+			where board_no like 'BOQNA'||'%'
+	 		<include refid="qnaSearch"/>
+	 		order by board_no desc
+	 	  ) a
+	 	) b
+	 	<![CDATA[
+	 		where b.rnum >= #{startRow} and b.rnum <= #{endRow}
+	 	]]>
+	</select>
+	
+	<update id="updateQna" parameterType="qnaVO">
+		update board
+		set
+			title = #{title},
+			content = #{content},
+			wrt_dt = sysdate
+		where board_no = #{boardNo}
+	</update>
+	
+	<delete id="deleteQna" parameterType="String">
+		delete from board
+		where board_no = #{boardNo}
+	</delete>
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

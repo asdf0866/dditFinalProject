@@ -1,0 +1,276 @@
+.content__ {
+	position : relative;
+	width : 100%;
+	display : flex;
+	justify-content : center;
+	background-color: #d7d7d7;
+}
+
+.resumeContour {
+	margin-bottom: 3rem;
+}
+
+.resumeContainer {
+	width : 1200px;
+	margin : 50px 10px;
+	padding : 25px 10px;
+	background-color: white;
+}
+
+.resumeContainer * {
+	font-family: "Gothic A1", sans-serif;
+	font-weight: 400;
+	font-style: normal;
+}
+
+.resumeTitle {
+	position: relative;
+}
+
+.titleText {
+	font-size : 2.4em;
+	font-weight: 800;
+	display: block;
+	margin : 15px 5px;
+}
+
+.titleInfo {
+	margin : 0 10px;
+}
+
+.titleName {
+	font-size : 1.2em;
+	font-weight : 600;
+	margin : 5px 0;
+}
+
+.titleHumanInfo {
+	font-weight : 300;
+	color : #606060;
+	margin : 5px 0;
+}
+
+.titleBasicInfo {
+	font-weight : 300;
+	margin : 10px 0;
+}
+
+.titleBasicInfo > i {
+	margin : 0 5px;
+}
+
+.pictureBox {
+	overflow : hidden;
+	position: absolute;
+	top : 0;
+	right : 15px;
+	width : 100px;
+	min-height: 100px;
+	max-height: 140px;
+}
+
+.pictureBox > * img {
+	width : 100px;
+	height : 140px;
+	border : 2px solid #aaaaaa;
+	padding : 3px;
+}
+
+.contentTitle {
+	font-size : 1.5em;
+	font-weight: 700;
+	margin : 0 5px 15px 5px;
+}
+
+.contentTitleDesc {
+	margin : 3px 5px 10px 10px;
+}
+
+.itemInputBox > form {
+	display: inherit;
+	width : inherit;
+	margin : 0;
+}
+
+.itemMenuBox {
+	width : 100%;
+	display: inline-flex;
+	align-items: center;
+	flex-direction: column;
+}
+
+.itemBigMenuBox {
+	width : 200%;
+	display: inline-flex;
+	align-items: center;
+	flex-direction: column;
+}
+
+.itemInputBox {
+	position: relative;
+	width : 100%;
+	display: inline-flex;
+	justify-content: space-evenly;
+	background : #f9f9f9;
+	border-radius: 5px;
+}
+
+.itemInputBox+ .itemInputBox {
+	border-top : 1px solid #aaaaaa;
+	margin-top : 10px;
+	border-radius: 0;
+	background : none;
+}
+.itemInputBox+ .itemInputBox > form {
+	margin-top : 10px;
+}
+
+.itemInputBox > .eduDiv {
+	width : 18%;
+	margin : 10px 5px;
+}
+
+.itemInputBox > .eduDiv:first-child {
+	width : 20%;
+}
+
+.itemTitle {
+	width : 100%;
+	padding : 5px;
+	border-top : 1px solid #aaaaaa;
+	border-bottom : 1px solid #aaaaaa;
+	text-align: center;
+}
+
+.itemValue {
+	width : 100%;
+	min-height : 25px;
+	display: inline-flex;
+	justify-content: center;
+	background-color : #fff; 
+}
+
+.itemValue+ .itemValue{
+	border-top: 1px solid #bebebe;
+}
+
+.itemValueText {
+	display: block;
+}
+
+.itemValueText:first-child {
+	margin-top : 8px;
+}
+
+.resumeSelect, .resumeInput {
+	width : 85%;
+	height : 45px;
+	margin : 10px 5px;
+	border : 2px solid;
+	border-radius: 5px;
+	text-align: center;
+	font-size: 0.9em;
+}
+
+.eduSelect, .eduInput {
+	font-size: 0.8em;
+}
+
+.milSelect {
+	width : 75%;
+}
+
+.contentTextarea {
+	width : 95%;
+	height : 180px;
+	margin : 5px 10px 30px 10px;
+}
+
+.itemFooter {
+	position: absolute;
+	bottom: 2%;
+	right : 5%;
+}
+
+.itemCheckBox+ .itemCheckBox {
+	border-left : 1px solid #aaaaaa;
+}
+
+.itemCheckBox > .itemTitle {
+	text-align : left;
+}
+
+.itemCheckBox > .itemValue {
+	justify-content: flex-start;
+	border-bottom: 1px solid #aaaaaa;
+}
+
+.itemCheck{
+	margin-left: 10px;
+}
+
+.resumeCheck {
+	border-color : #4b4b4b;
+}
+.resumeCheck:checked {
+    background-color: #5b5b5b;
+    border-color: #5b5b5b;
+}
+
+.charCalc {
+	margin : 0;
+	color : #8a8a8a;
+}
+
+.charCalc > .charTitle {
+	font-weight: 600;
+}
+
+.resumeFooter {
+	display: flex;
+	justify-content: center;
+}
+
+.resumeFooterBtn {
+	display : block;
+	width : 100%;
+	max-width : 180px;
+	font-size : 14px;
+	line-height : 44px;
+	letter-spacing: -0.3px;
+	font-weight: bold;
+	margin : 15px 15px;
+	border : none;
+}
+
+.resumeFooter > .linkBtn {
+	background-color : #f2f2f2;
+	color : #000;
+}
+
+.resumeFooter > .submitBtn {
+	background-color : #000;
+	color : #fff;
+}
+
+.btnBox {
+	width : 10%;
+}
+
+.resumeBtn {
+   	padding : 4px 12px;
+   	font-size : 12px;
+	text-decoration : none;
+   	color : white;
+	float : right;
+	background: linear-gradient(to bottom, rgba(102, 152, 203, 1) 0%, rgba(92, 138, 184, 1) 100%);
+	display: block;
+	position: relative;
+	top : 50%;
+	right : 0;
+   	
+	border: 1px solid rgba(0, 0, 0, 0.21);
+	border-bottom: 4px solid rgba(0, 0, 0, 0.21);
+	border-radius: 4px;
+	text-shadow: 0 1px 0 rgba(0, 0, 0, 0.15);
+}

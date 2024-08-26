@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IMemberMapper">
+
+	<resultMap type="memberVO" id="memberMap">
+		<id property="memId" column="mem_id"/>
+		<result property="memId" column="mem_id"/>
+		<result property="memPassword" column="mem_password"/>
+		<result property="name" column="name"/>
+		<result property="telno" column="telno"/>
+		<result property="email" column="email"/>
+		<result property="joinYmd" column="join_ymd"/>
+		<result property="memStatCode" column="mem_stat_code"/>
+		<result property="nickname" column="nickname"/>
+		<result property="gender" column="gender"/>
+		<result property="brdt" column="brdt"/>
+		<result property="postcode" column="postcode"/>
+		<result property="addressBasic" column="address_basic"/>
+		<result property="addressDetail" column="address_detail"/>
+		<result property="marriageYn" column="marriage_yn"/>
+		<result property="profilePhotoPath" column="profile_photo_path"/>
+		<result property="coNo" column="co_no"/>
+		<result property="jobName" column="job_name"/>
+		<collection property="authList" resultMap="memAuthMap"/>
+	</resultMap>
+	
+	<resultMap type="memberAuthVO" id="memAuthMap">
+		<result property="memId" column="mem_id"/>
+		<result property="auth" column="auth"/>
+	</resultMap>
+
+	<select id="readByUserId" parameterType="String" resultMap="memberMap">
+		SELECT m.mem_id, mem_password, name, telno, email, join_ymd, mem_stat_code
+     		 , nickname, gender, brdt, postcode, address_basic, address_detail, marriage_yn, profile_photo_path
+     		 , co_no, job_name, auth
+  		  FROM member m
+  		  left outer join common_member cm on (m.mem_id = cm.mem_id)
+  		  left outer join co_member om on (m.mem_id = om.mem_id)
+  		  left outer join member_auth ma on (m.mem_id = ma.mem_id)
+  		 WHERE 1 = 1
+  		   and m.mem_id = #{memId}
+	</select>
+
+	<insert id="register" parameterType="memberVO">
+		insert into member(
+			MEM_ID, MEM_PASSWORD, NAME, TELNO, EMAIL, JOIN_YMD, MEM_STAT_CODE
+			)
+		values(
+			#{memId}, #{memPassword}, #{name}, #{telno}, #{email}, TO_CHAR(SYSDATE, 'yyyyMMdd'), #{memStatCode}
+			)
+	</insert>
+	
+	<insert id="registerMember" parameterType="memberVO">
+		INSERT INTO COMMON_MEMBER(
+			MEM_ID, NICKNAME, GENDER, BRDT, POSTCODE, ADDRESS_BASIC, ADDRESS_DETAIL, MARRIAGE_YN 
+			<if test="profilePhotoPath != null and profilePhotoPath != ''"> , PROFILE_PHOTO_PATH</if>
+			)
+		values(
+			#{memId}, #{nickname}, #{gender}, #{brdt}
+			, #{postcode}, #{addressBasic}, #{addressDetail}, #{marriageYn}
+			<if test="profilePhotoPath != null and profilePhotoPath != ''"> , #{profilePhotoPath} </if> 
+			)
+	</insert>
+	
+	<insert id="registerCoMember" parameterType="memberVO">
+		INSERT INTO CO_MEMBER(
+			MEM_ID, CO_NO, JOB_NAME
+		)
+		VALUES(
+			#{memId}, #{coNo}, #{jobName}
+		)
+	</insert>
+	
+	<insert id="registerAuth" parameterType="memberAuthVO">
+		INSERT INTO MEMBER_AUTH(mem_id, auth)
+		VALUES(#{memId}, #{auth})
+	</insert>
+	
+	<delete id="deleteAuth" parameterType="String">
+		DELETE FROM MEMBER_AUTH
+		 WHERE MEM_ID = #{memId}
+	</delete>
+	
+	<select id="idCheck" parameterType="String" resultType="int">
+		SELECT COUNT(MEM_ID)
+		  FROM MEMBER
+		 WHERE 1 = 1
+		   AND MEM_ID = #{memId}
+		   AND MEM_STAT_CODE != 'MEMSTAT000'
+	</select>
+	
+	<update id="memberEdit" parameterType="memberVO">
+		UPDATE
+			MEMBER
+		SET
+			NAME = #{name},
+			TELNO = #{telno},
+			EMAIL = #{email}
+		WHERE
+			MEM_ID = #{memId}
+	</update>
+	
+	<update id="coMemberEdit" parameterType="memberVO">
+		UPDATE
+			CO_MEMBER
+		SET
+			JOB_NAME = #{jobName}
+		WHERE
+			MEM_ID = #{memId}
+	</update>
+	
+	<select id="getMemberPassword" parameterType="String" resultType="String">
+		SELECT MEM_PASSWORD
+		  FROM MEMBER
+		 WHERE 1 = 1
+		   AND MEM_ID = #{memId}
+	</select>
+	
+	<update id="changeMyPw" parameterType="map">
+		UPDATE MEMBER
+		   SET MEM_PASSWORD = #{memPassword}
+		 WHERE MEM_ID = #{memId}
+	</update>
+	
+	<update id="changeMyAddr" parameterType="memberVO">
+		UPDATE
+			COMMON_MEMBER
+		SET
+			POSTCODE = #{postcode},
+			ADDRESS_BASIC = #{addressBasic},
+			ADDRESS_DETAIL = #{addressDetail}
+		WHERE
+			MEM_ID = #{memId}
+	</update>
+	
+	<update id="changeMyAcct" parameterType="map">
+		UPDATE ${table}
+		SET ${keyword} = #{value}
+		WHERE MEM_ID = #{memId}
+	</update>
+	
+	<update id="changeProfile" parameterType="memberVO">
+		UPDATE
+			COMMON_MEMBER
+		SET
+			NICKNAME = #{nickname}
+			<if test="profilePhotoPath != null and profilePhotoPath != ''">
+		   	, PROFILE_PHOTO_PATH = #{profilePhotoPath}
+			</if>
+		 WHERE MEM_ID = #{memId}
+	</update>
+	
+	<resultMap type="memberVO" id="commonMemberMap">
+		<id property="memId" column="mem_id"/>
+		<result property="memId" column="mem_id"/>
+		<result property="memPassword" column="mem_password"/>
+		<result property="name" column="name"/>
+		<result property="telno" column="telno"/>
+		<result property="email" column="email"/>
+		<result property="joinYmd" column="join_ymd"/>
+		<result property="memStatCode" column="mem_stat_code"/>
+		<result property="nickname" column="nickname"/>
+		<result property="gender" column="gender"/>
+		<result property="brdt" column="brdt"/>
+		<result property="postcode" column="postcode"/>
+		<result property="addressBasic" column="address_basic"/>
+		<result property="addressDetail" column="address_detail"/>
+		<result property="marriageYn" column="marriage_yn"/>
+		<result property="profilePhotoPath" column="profile_photo_path"/>
+		<collection property="authList" resultMap="memAuthMap"/>
+	</resultMap>
+	
+	<sql id="pageHeader">
+   		select b.*
+		  from (
+		  	select a.*, ROWNUM as rnum
+		  	  from (
+	</sql>
+	
+	<sql id="pageFooter">
+				) a
+			) b
+		<![CDATA[
+		WHERE b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</sql>
+	
+	<select id="getMemberList" parameterType="pagingVO" resultMap="commonMemberMap">
+		<include refid="pageHeader"/>
+		SELECT MEM.MEM_ID, MEM_PASSWORD, NAME, TELNO, EMAIL, JOIN_YMD, MEM_STAT_CODE
+			 , NICKNAME, GENDER, BRDT, POSTCODE, ADDRESS_BASIC, ADDRESS_DETAIL, MARRIAGE_YN, PROFILE_PHOTO_PATH, AUTH
+		  FROM MEMBER mem, COMMON_MEMBER cmem, MEMBER_AUTH ma
+		 WHERE mem.MEM_ID = cmem.MEM_ID
+		   AND mem.MEM_ID = ma.MEM_ID
+		 ORDER BY MEM.MEM_ID
+		<include refid="pageFooter"/>
+	</select>
+	
+	<select id="getMemberCount" resultType="int">
+		SELECT COUNT(*)
+		  FROM MEMBER mem, COMMON_MEMBER cmem, MEMBER_AUTH ma
+		 WHERE mem.MEM_ID = cmem.MEM_ID
+		   AND mem.MEM_ID = ma.MEM_ID
+	</select>
+	
+	<select id="memberDataGet" parameterType="String" resultMap="commonMemberMap">
+		SELECT MEM.MEM_ID, MEM_PASSWORD, NAME, TELNO, EMAIL, JOIN_YMD, MEM_STAT_CODE
+			 , NICKNAME, GENDER, BRDT, POSTCODE, ADDRESS_BASIC, ADDRESS_DETAIL, MARRIAGE_YN, PROFILE_PHOTO_PATH, AUTH
+		  FROM MEMBER mem, COMMON_MEMBER cmem, MEMBER_AUTH ma
+		 WHERE mem.MEM_ID = cmem.MEM_ID
+		   AND mem.MEM_ID = ma.MEM_ID
+		   AND mem.MEM_ID = #{memId}
+	</select>
+	
+	<select id="coMemberDateGet" parameterType="String" resultType="memberVO">
+		SELECT mem.MEM_ID, MEM_PASSWORD, NAME, TELNO, EMAIL, JOIN_YMD, MEM_STAT_CODE
+			 , CO_NO, JOB_NAME
+		  FROM MEMBER mem, CO_MEMBER cmem
+		 WHERE mem.MEM_ID = cmem.MEM_ID
+		   AND CO_NO = #{coNo}
+	</select>
+	
+	<update id="signUpCoMember" parameterType="String">
+		UPDATE MEMBER
+		   SET MEM_STAT_CODE = 'MEMSTAT101'
+		 WHERE MEM_ID = (select MEM_ID
+		 				   from CO_MEMBER
+		 				  where CO_NO = #{coNo})
+	</update>
+	
+	<select id="getCoMemId" parameterType="String" resultType="String">
+		SELECT MEM_ID
+		  FROM CO_MEMBER
+		 WHERE CO_NO = #{coNo}
+	</select>
+	
+	<update id="cancelCoMember" parameterType="String">
+			UPDATE MEMBER
+		   SET MEM_STAT_CODE = 'MEMSTAT102'
+		 WHERE MEM_ID = (select MEM_ID
+		 				   from CO_MEMBER
+		 				  where CO_NO = #{coNo})
+	</update>
+	
+	<select id="getMemId" parameterType="memberVO" resultType="String">
+		SELECT MEM_ID
+		  FROM MEMBER
+		 WHERE NAME = #{name}
+		   AND EMAIL = #{email}
+	</select>
+	
+	<select id="findMyPw" parameterType="memberVO" resultType="int">
+		SELECT COUNT(*)
+		  FROM MEMBER
+		 WHERE NAME = #{name}
+		   AND EMAIL = #{email}
+		   AND MEM_ID = #{memId}
+	</select>
+</mapper>

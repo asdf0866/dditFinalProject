@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.mapper.IApplicationMapper">
+
+	<sql id="pageHeader">
+		select b.*
+		  from (
+		  	select a.*, row_number() over (order by a.APP_NO desc) rnum
+		  	  from (
+	</sql>
+	
+	<sql id="pageFooter">
+				) a
+			) b
+		<![CDATA[
+		WHERE b.rnum >= #{startRow} and b.rnum <= #{endRow}
+		]]>
+	</sql>
+	
+	<resultMap type="applyVO" id="applyMap">
+		<id property="appNo" column="app_no"/>
+		<result property="appNo" column="app_no"/>
+		<result property="recruitNo" column="recruit_no"/>
+		<result property="rsmNo" column="rsm_no"/>
+		<result property="appStatCode" column="app_stat_code"/>
+		<result property="appApplyYmd" column="app_apply_ymd"/>
+		<result property="appChgYmd" column="app_chg_ymd"/>
+		<result property="memberName" column="member_name"/>
+		<result property="rsmTitle" column="rsm_title"/>
+		<collection property="document" resultMap="applyDocMap"/>
+	</resultMap>
+	
+	<resultMap type="applyDocVO" id="applyDocMap">
+		<id property="appNo" column="app_no"/>
+		<result property="appNo" column="app_no"/>
+		<result property="documentNo" column="document_no"/>
+		<result property="rsmFileNo" column="rsm_file_no"/>
+		<result property="documentStatCode" column="document_stat_code"/>
+	</resultMap>
+
+	<insert id="doApplication"	parameterType="applyVO">
+		<selectKey keyProperty="appNo" resultType="int" order="BEFORE">
+			select seq_app.nextval from dual
+        </selectKey>
+		INSERT INTO APPLICATION(
+			APP_NO, RECRUIT_NO, RSM_NO, APP_STAT_CODE, APP_APPLY_YMD
+		)
+		VALUES(
+			#{appNo}, #{recruitNo}, #{rsmNo}, #{appStatCode}, TO_CHAR(SYSDATE, 'yyyyMMdd')
+		)
+	</insert>
+	
+	<insert id="doAppDocument" parameterType="applyDocVO">
+		INSERT INTO APPLICATION_DOCUMENT(
+			APP_NO, DOCUMENT_NO, RSM_FILE_NO, DOCUMENT_STAT_CODE
+		)
+		VALUES(
+			#{appNo}, #{documentNo}, #{rsmFileNo}, #{documentStatCode}
+		)
+	</insert>
+	
+	<select id="applyCheck" parameterType="map" resultType="int">
+		SELECT COUNT(*)
+		  FROM APPLICATION app, RESUME rsm, MEMBER mem
+		 WHERE 1 = 1
+		   AND app.RECRUIT_NO = #{recruitNo}
+		   AND mem.MEM_ID = #{memId}
+		   AND app.RSM_NO = rsm.RSM_NO
+		   AND rsm.MEM_ID = mem.MEM_ID
+	</select>
+	
+	<select id="getDocCount" parameterType="int" resultType="int">
+		SELECT COUNT(*)
+		  FROM APPLICATION_DOCUMENT
+		 WHERE APP_NO = #{appNo}
+	</select>
+	
+	<select id="getTotalAppCount" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		  FROM APPLICATION app, RESUME rsm, MEMBER mem
+		 WHERE 1 = 1
+		    AND app.RSM_NO = rsm.RSM_NO
+		    AND rsm.MEM_ID = mem.MEM_ID
+		    AND mem.MEM_ID = #{memId}
+	</select>
+	
+	<select id="getApplyRecruit" parameterType="pagingVO" resultType="applyVO">
+		<include refid="pageHeader"/>
+		 SELECT APP_NO, RECRUIT_NO, rsm.RSM_NO AS RSM_NO, APP_STAT_CODE, APP_APPLY_YMD, APP_CHG_YMD
+		   FROM APPLICATION app, RESUME rsm, MEMBER mem
+		  WHERE 1 = 1
+		    AND app.RSM_NO = rsm.RSM_NO
+		    AND rsm.MEM_ID = mem.MEM_ID
+		    AND mem.MEM_ID = #{memId}
+		  ORDER BY APP_NO DESC
+		<include refid="pageFooter" />
+	</select>
+	
+	<select id="getAppList" parameterType="int" resultMap="applyMap">
+		SELECT app.APP_NO, RECRUIT_NO, RSM_NO, APP_STAT_CODE, APP_APPLY_YMD, APP_CHG_YMD
+		     , DOCUMENT_NO, RSM_FILE_NO, DOCUMENT_STAT_CODE
+		     , (SELECT mem.NAME FROM MEMBER mem, COMMON_MEMBER cmem, RESUME rsm
+		     	WHERE mem.MEM_ID = cmem.MEM_ID AND rsm.MEM_ID = mem.MEM_ID AND rsm.RSM_NO = app.RSM_NO) MEMBER_NAME
+			 , (SELECT rsm.RSM_TITLE FROM RESUME rsm WHERE rsm.RSM_NO = app.RSM_NO) RSM_TITLE
+		  FROM APPLICATION app, APPLICATION_DOCUMENT doc
+		 WHERE 1 = 1
+		   AND app.APP_NO = doc.APP_NO
+		   AND RECRUIT_NO = #{recNo}
+	</select>
+	
+</mapper>
